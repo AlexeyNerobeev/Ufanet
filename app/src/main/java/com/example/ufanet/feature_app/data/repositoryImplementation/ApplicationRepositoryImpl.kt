@@ -96,4 +96,18 @@ class ApplicationRepositoryImpl : ApplicationRepository {
             }
         }
     }
+
+    override suspend fun getAllApplications(): List<Application> {
+        return supabase.postgrest["applications"].select(
+            columns = Columns.list(
+                "id",
+                "company_name",
+                "address",
+                "phone",
+                "description",
+                "status",
+                "comment_id"
+            )
+        ).decodeList<Application>()
+    }
 }

@@ -11,5 +11,5 @@ data class Application(
     val user_id: String = "",
     val address: String = "",
     val status: String = "",
-    val comment_id: Int = 0
+    val comment_id: Int? = 0
     )

@@ -3,6 +3,7 @@ package com.example.ufanet.di
 import com.example.ufanet.feature_app.data.repositoryImplementation.ApplicationRepositoryImpl
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
 import com.example.ufanet.feature_app.domain.usecase.AddApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetAllApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.RemoveApplicationUseCase
@@ -27,5 +28,8 @@ val moduleApplications = module{
     }
     factory<UpdateApplicationUseCase>{
         UpdateApplicationUseCase(get())
+    }
+    factory<GetAllApplicationsUseCase> {
+        GetAllApplicationsUseCase(get())
     }
 }

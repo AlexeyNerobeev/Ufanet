@@ -16,11 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
 
 @Composable
-fun EmployeeBottomNavigation() {
+fun EmployeeBottomNavigation(navController: NavController) {
     Box(
     modifier = Modifier
     .height(70.dp)
@@ -62,7 +63,16 @@ fun EmployeeBottomNavigation() {
                     )
                 }
                 IconButton(onClick = {
-
+                    navController.navigate(NavRoutes.EmployeeSearchScreen.route)
+                }) {
+                    Icon(
+                        painter = painterResource(R.drawable.search_icon),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                }
+                IconButton(onClick = {
+                    navController.navigate(NavRoutes.ProfileScreen.route)
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.profile_icon),

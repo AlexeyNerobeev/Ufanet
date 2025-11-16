@@ -10,5 +10,6 @@ data class Profile(
     val phone: String = "",
     val email: String = "",
     val status: String = "",
-    val user_id: String = ""
+    val user_id: String = "",
+    val role_id: Int = 0
 )

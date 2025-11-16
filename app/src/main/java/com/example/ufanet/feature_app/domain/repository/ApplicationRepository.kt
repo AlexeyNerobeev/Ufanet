@@ -15,4 +15,5 @@ interface ApplicationRepository {
                                   address: String,
                                   phone: String,
                                   description: String)
+    suspend fun getAllApplications(): List<Application>
 }

@@ -1,6 +1,7 @@
 package com.example.ufanet.di
 
 import com.example.ufanet.feature_app.presentation.Applications.ApplicationsVM
+import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeVM
 import com.example.ufanet.feature_app.presentation.Home.HomeVM
 import com.example.ufanet.feature_app.presentation.Profile.ProfileVM
 import com.example.ufanet.feature_app.presentation.SignIn.SignInVM
@@ -23,5 +24,8 @@ val moduleVM = module {
     }
     viewModel<ProfileVM> {
         ProfileVM(get(), get())
+    }
+    viewModel<EmployeeHomeVM> {
+        EmployeeHomeVM(get())
     }
 }

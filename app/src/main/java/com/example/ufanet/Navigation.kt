@@ -9,4 +9,5 @@ sealed class NavRoutes(val route: String) {
     }
     data object ProfileScreen: NavRoutes("ProfileScreen")
     data object EmployeeHomeScreen: NavRoutes("EmployeeHomeScreen")
+    data object EmployeeSearchScreen: NavRoutes("EmployeeSearchScreen")
 }
