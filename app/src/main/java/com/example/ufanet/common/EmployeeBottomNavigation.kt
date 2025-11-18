@@ -21,7 +21,7 @@ import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
 
 @Composable
-fun EmployeeBottomNavigation(navController: NavController) {
+fun EmployeeBottomNavigation(navController: NavController, activityNumber: Int) {
     Box(
     modifier = Modifier
     .height(70.dp)
@@ -44,7 +44,9 @@ fun EmployeeBottomNavigation(navController: NavController) {
             ) {
                 IconButton(
                     onClick = {
+                        if(activityNumber != 1){
 
+                        }
                     }
                 ) {
                     Icon(
@@ -54,7 +56,9 @@ fun EmployeeBottomNavigation(navController: NavController) {
                     )
                 }
                 IconButton(onClick = {
-
+                        if(activityNumber != 2){
+                            navController.navigate(NavRoutes.EmployeeHomeScreen.route)
+                        }
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.home_icon),
@@ -63,7 +67,9 @@ fun EmployeeBottomNavigation(navController: NavController) {
                     )
                 }
                 IconButton(onClick = {
-                    navController.navigate(NavRoutes.EmployeeSearchScreen.route)
+                    if(activityNumber != 3){
+                        navController.navigate(NavRoutes.EmployeeSearchScreen.route)
+                    }
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.search_icon),
@@ -72,7 +78,9 @@ fun EmployeeBottomNavigation(navController: NavController) {
                     )
                 }
                 IconButton(onClick = {
-                    navController.navigate(NavRoutes.ProfileScreen.route)
+                    if(activityNumber != 4) {
+                        navController.navigate (NavRoutes.EmployeeProfileScreen.route)
+                    }
                 }) {
                     Icon(
                         painter = painterResource(R.drawable.profile_icon),

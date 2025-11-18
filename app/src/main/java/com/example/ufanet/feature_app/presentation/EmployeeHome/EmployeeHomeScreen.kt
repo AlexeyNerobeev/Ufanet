@@ -206,6 +206,6 @@ fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = koinVi
             .fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        EmployeeBottomNavigation(navController)
+        EmployeeBottomNavigation(navController, 2)
     }
 }

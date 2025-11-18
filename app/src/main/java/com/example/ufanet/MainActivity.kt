@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ufanet.feature_app.presentation.Applications.ApplicationsScreen
 import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeScreen
+import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileScreen
 import com.example.ufanet.feature_app.presentation.EmployeeSearch.EmployeeSearchScreen
 import com.example.ufanet.feature_app.presentation.Home.HomeScreen
 import com.example.ufanet.feature_app.presentation.Profile.ProfileScreen
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
                 composable (NavRoutes.ProfileScreen.route) { ProfileScreen(navController) }
                 composable(NavRoutes.EmployeeHomeScreen.route) { EmployeeHomeScreen(navController) }
                 composable(NavRoutes.EmployeeSearchScreen.route) { EmployeeSearchScreen(navController) }
+                composable(NavRoutes.EmployeeProfileScreen.route) { EmployeeProfileScreen(navController) }
             }
         }
     }
