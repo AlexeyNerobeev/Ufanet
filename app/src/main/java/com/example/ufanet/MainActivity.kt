@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ufanet.feature_app.presentation.Applications.ApplicationsScreen
+import com.example.ufanet.feature_app.presentation.Comments.CommentsScreen
 import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeScreen
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileScreen
 import com.example.ufanet.feature_app.presentation.EmployeeSearch.EmployeeSearchScreen
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = NavRoutes.SignInScreen.route){
+            NavHost(navController = navController, startDestination = NavRoutes.CommentsScreen.route){
                 composable (NavRoutes.SignInScreen.route) { SignInScreen(navController) }
                 composable (NavRoutes.SignUpScreen.route) { SignUpScreen(navController)}
                 composable (NavRoutes.HomeScreen.route) { HomeScreen(navController)}
@@ -43,7 +44,8 @@ class MainActivity : ComponentActivity() {
                 composable (NavRoutes.ProfileScreen.route) { ProfileScreen(navController) }
                 composable(NavRoutes.EmployeeHomeScreen.route) { EmployeeHomeScreen(navController) }
                 composable(NavRoutes.EmployeeSearchScreen.route) { EmployeeSearchScreen(navController) }
-                composable(NavRoutes.EmployeeProfileScreen.route) { EmployeeProfileScreen(navController) }
+                composable(NavRoutes.EmployeeProfileScreen.route) { EmployeeProfileScreen(navController ) }
+                composable(NavRoutes.CommentsScreen.route) { CommentsScreen(navController) }
             }
         }
     }

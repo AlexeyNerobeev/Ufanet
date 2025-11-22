@@ -17,6 +17,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
 
@@ -45,7 +46,7 @@ fun EmployeeBottomNavigation(navController: NavController, activityNumber: Int) 
                 IconButton(
                     onClick = {
                         if(activityNumber != 1){
-
+                            navController.navigate(NavRoutes.CommentsScreen.route)
                         }
                     }
                 ) {

@@ -1,6 +1,7 @@
 package com.example.ufanet.di
 
 import com.example.ufanet.feature_app.presentation.Applications.ApplicationsVM
+import com.example.ufanet.feature_app.presentation.Comments.CommentsVM
 import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeVM
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileEvent
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileVM
@@ -32,5 +33,8 @@ val moduleVM = module {
     }
     viewModel<EmployeeProfileVM> {
         EmployeeProfileVM(get(), get())
+    }
+    viewModel<CommentsVM> {
+        CommentsVM()
     }
 }
