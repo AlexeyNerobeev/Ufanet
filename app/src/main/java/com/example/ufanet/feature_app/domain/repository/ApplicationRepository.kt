@@ -16,4 +16,5 @@ interface ApplicationRepository {
                                   phone: String,
                                   description: String)
     suspend fun getAllApplications(): List<Application>
+    suspend fun getApplicationStatus(applicationId: Int): Application
 }

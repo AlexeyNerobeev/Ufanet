@@ -2,6 +2,7 @@ package com.example.ufanet.feature_app.presentation.EmployeeHome
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -106,6 +107,9 @@ fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = koinVi
                             )
                             .clip(shape = RoundedCornerShape(10.dp))
                             .border(width = 2.dp, Color.LightGray, RoundedCornerShape(10.dp))
+                            .clickable{
+                                navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
+                            }
                     ) {
                         Column(
                             modifier = Modifier

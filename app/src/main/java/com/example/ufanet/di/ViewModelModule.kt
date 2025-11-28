@@ -35,6 +35,6 @@ val moduleVM = module {
         EmployeeProfileVM(get(), get())
     }
     viewModel<CommentsVM> {
-        CommentsVM()
+        CommentsVM(get(), get())
     }
 }

@@ -6,4 +6,5 @@ sealed class CommentsEvent {
     data object ApplicationStatusChangeCompleted: CommentsEvent()
     data object AddNewComment: CommentsEvent()
     data class EnteredCommentDescription(val value: String): CommentsEvent()
+    data class GetAllInfo(val value: Int): CommentsEvent()
 }

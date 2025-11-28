@@ -3,6 +3,7 @@ package com.example.ufanet
 import android.app.Application
 import com.example.ufanet.di.moduleApplications
 import com.example.ufanet.di.moduleAuth
+import com.example.ufanet.di.moduleComment
 import com.example.ufanet.di.moduleProfile
 import com.example.ufanet.di.moduleVM
 import org.koin.android.ext.koin.androidContext
@@ -18,7 +19,7 @@ class App: Application() {
             androidContext(applicationContext)
             androidLogger(level = Level.DEBUG)
             modules(
-                moduleVM, moduleAuth, moduleApplications, moduleProfile
+                moduleVM, moduleAuth, moduleApplications, moduleProfile, moduleComment
             )
         }
     }

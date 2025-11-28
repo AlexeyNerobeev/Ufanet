@@ -105,9 +105,22 @@ class ApplicationRepositoryImpl : ApplicationRepository {
                 "address",
                 "phone",
                 "description",
-                "status",
-                "comment_id"
+                "status"
             )
         ).decodeList<Application>()
+    }
+
+    override suspend fun getApplicationStatus(applicationId: Int): Application {
+        return supabase.postgrest["applications"].select(
+            columns = Columns.list(
+                "status"
+            )
+        ){
+            filter {
+                and {
+                    eq("id", applicationId)
+                }
+            }
+        }.decodeSingle<Application>()
     }
 }

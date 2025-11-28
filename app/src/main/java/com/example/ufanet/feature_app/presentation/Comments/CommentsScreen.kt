@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,14 +37,16 @@ import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.ptSansBold
-import com.example.ufanet.feature_app.presentation.Applications.ApplicationsEvent
-import com.example.ufanet.feature_app.presentation.Home.HomeEvent
-import com.example.ufanet.feature_app.presentation.SignIn.SignInEvent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CommentsScreen(navController: NavController, vm: CommentsVM = koinViewModel()) {
+fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = koinViewModel()) {
     val state = vm.state.value
+    LaunchedEffect(key1 = !state.isComplete) {
+        if (itemId > 0) {
+            vm.onEvent(CommentsEvent.GetAllInfo(itemId))
+        }
+    }
     Scaffold(modifier = Modifier.fillMaxSize()){ innerPadding ->
         Column(modifier = Modifier
             .padding(innerPadding)
@@ -154,7 +157,7 @@ fun CommentsScreen(navController: NavController, vm: CommentsVM = koinViewModel(
                         .padding(top = 20.dp))
                 LazyColumn(modifier = Modifier
                     .padding(top = 10.dp)) {
-                    items(10){
+                    items(state.commentsList.size){
                         Text(text = "1.",
                             color = Color.Black,
                             fontSize = 15.sp,

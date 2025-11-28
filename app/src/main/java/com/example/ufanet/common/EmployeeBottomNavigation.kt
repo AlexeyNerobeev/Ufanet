@@ -46,7 +46,7 @@ fun EmployeeBottomNavigation(navController: NavController, activityNumber: Int) 
                 IconButton(
                     onClick = {
                         if(activityNumber != 1){
-                            navController.navigate(NavRoutes.CommentsScreen.route)
+
                         }
                     }
                 ) {
