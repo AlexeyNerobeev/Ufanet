@@ -6,5 +6,6 @@ data class SignInState(
     val visual: Boolean = true,
     val isComplete: Boolean = false,
     val exception: String = "",
-    val status: String = ""
+    val status: String = "",
+    val progressIndicator: Boolean = false
 )

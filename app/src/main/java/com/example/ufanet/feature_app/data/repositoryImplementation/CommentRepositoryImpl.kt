@@ -8,12 +8,12 @@ import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 
 class CommentRepositoryImpl: CommentRepository {
-    override suspend fun addComment(commentText: String) {
-        val comment = Comment(comment_text = commentText, author_id = getUserId())
+    override suspend fun addComment(commentText: String, applicationId: Int) {
+        val comment = Comment(comment_text = commentText, author_id = getUserId(), application_id = applicationId)
         supabase.postgrest["comments"].insert(comment)
     }
 
-    override suspend fun getComments(applicationId: Int): List<String> {
+    override suspend fun getComments(applicationId: Int): List<Comment> {
         return supabase.postgrest["comments"].select(
             columns = Columns.list(
                 "comment_text"
@@ -24,7 +24,7 @@ class CommentRepositoryImpl: CommentRepository {
                     eq("application_id", applicationId)
                 }
             }
-        }.decodeList<String>()
+        }.decodeList<Comment>()
     }
 
     private suspend fun getUserId(): String {

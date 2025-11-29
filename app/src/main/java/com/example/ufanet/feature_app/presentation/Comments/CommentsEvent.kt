@@ -6,5 +6,11 @@ sealed class CommentsEvent {
     data object ApplicationStatusChangeCompleted: CommentsEvent()
     data object AddNewComment: CommentsEvent()
     data class EnteredCommentDescription(val value: String): CommentsEvent()
-    data class GetAllInfo(val value: Int): CommentsEvent()
+    data object GetAllInfo: CommentsEvent()
+    data class GetApplicationId(val value: Int): CommentsEvent()
+    data object WriteNewComment: CommentsEvent()
+    data object UpdateStatus: CommentsEvent()
+    data object ShowProcessIndicator: CommentsEvent()
+    data object ErrorClear: CommentsEvent()
+    data object ShowError: CommentsEvent()
 }

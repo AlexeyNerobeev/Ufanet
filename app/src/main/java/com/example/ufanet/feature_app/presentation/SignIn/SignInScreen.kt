@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -153,6 +154,7 @@ fun SignInScreen(navController: NavController, vm: SignInVM = koinViewModel()) {
                     }
                 )
                 Button(onClick = {
+                    vm.onEvent(SignInEvent.ShowProgressIndicator)
                     vm.onEvent(SignInEvent.SignIn)
                 },
                     modifier = Modifier
@@ -166,11 +168,17 @@ fun SignInScreen(navController: NavController, vm: SignInVM = koinViewModel()) {
                         contentColor = Color.White,
                         containerColor = Color.Transparent
                     )) {
-                    Text(text = "Войти",
-                        color = Color.White,
-                        fontFamily = interBold,
-                        fontSize = 18.sp
-                    )
+                    if(!state.progressIndicator){
+                        Text(text = "Войти",
+                            color = Color.White,
+                            fontFamily = interBold,
+                            fontSize = 18.sp
+                        )
+                    } else{
+                        CircularProgressIndicator(
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

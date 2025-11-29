@@ -8,6 +8,7 @@ import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseC
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.RemoveApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationUseCase
 import org.koin.dsl.module
 
@@ -35,5 +36,8 @@ val moduleApplications = module{
     }
     factory<GetApplicationStatusUseCase> {
         GetApplicationStatusUseCase(get())
+    }
+    factory<UpdateApplicationStatusUseCase>{
+        UpdateApplicationStatusUseCase(get())
     }
 }

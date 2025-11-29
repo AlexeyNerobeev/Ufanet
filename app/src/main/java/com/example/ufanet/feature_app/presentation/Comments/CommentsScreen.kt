@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,16 +37,28 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
+import com.example.ufanet.common.EmployeeBottomNavigation
+import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.ptSansBold
+import com.example.ufanet.feature_app.presentation.SignIn.SignInEvent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = koinViewModel()) {
     val state = vm.state.value
     LaunchedEffect(key1 = !state.isComplete) {
+        if(state.isComplete){
+            navController.navigate(NavRoutes.EmployeeHomeScreen.route)
+        }
         if (itemId > 0) {
-            vm.onEvent(CommentsEvent.GetAllInfo(itemId))
+            vm.onEvent(CommentsEvent.GetApplicationId(itemId))
+            vm.onEvent(CommentsEvent.GetAllInfo)
+        }
+    }
+    if(state.error.isNotEmpty()){
+        ErrorAlertDialog(state.error) {
+            vm.onEvent(CommentsEvent.ErrorClear)
         }
     }
     Scaffold(modifier = Modifier.fillMaxSize()){ innerPadding ->
@@ -157,15 +171,15 @@ fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = k
                         .padding(top = 20.dp))
                 LazyColumn(modifier = Modifier
                     .padding(top = 10.dp)) {
-                    items(state.commentsList.size){
-                        Text(text = "1.",
+                    items(state.commentsList){ item ->
+                        Text(text = ((state.commentsList.indexOf(item)) + 1).toString(),
                             color = Color.Black,
                             fontSize = 15.sp,
                             fontFamily = ptSansBold,
                             modifier = Modifier
                                 .padding(top = 15.dp))
                         TextField(
-                            value = "",
+                            value = item.comment_text,
                             onValueChange = {
 
                             },
@@ -241,7 +255,15 @@ fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = k
                     }
                     item {
                         Button(onClick = {
-
+                            if (state.currentApplicationStatus != state.applicationStatus
+                                || (state.commentDescription.isNotEmpty()
+                                        && state.commentDescription != null)){
+                                vm.onEvent(CommentsEvent.ShowProcessIndicator)
+                                vm.onEvent(CommentsEvent.UpdateStatus)
+                                vm.onEvent(CommentsEvent.WriteNewComment)
+                            } else{
+                                vm.onEvent(CommentsEvent.ShowError)
+                            }
                         },
                             modifier = Modifier
                                 .padding(top = 50.dp)
@@ -254,16 +276,29 @@ fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = k
                                 contentColor = Color.White,
                                 containerColor = Color.Transparent
                             )) {
-                            Text(text = "Сохранить",
-                                color = Color.White,
-                                fontFamily = interBold,
-                                fontSize = 18.sp
-                            )
+                            if (!state.progressIndicator){
+                                Text(text = "Сохранить",
+                                    color = Color.White,
+                                    fontFamily = interBold,
+                                    fontSize = 18.sp
+                                )
+                            } else{
+                                CircularProgressIndicator(
+                                    color = Color.White
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(100.dp))
                     }
                 }
             }
         }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        EmployeeBottomNavigation(navController, 1)
     }
 }

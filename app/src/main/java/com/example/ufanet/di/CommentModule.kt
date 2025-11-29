@@ -2,6 +2,7 @@ package com.example.ufanet.di
 
 import com.example.ufanet.feature_app.data.repositoryImplementation.CommentRepositoryImpl
 import com.example.ufanet.feature_app.domain.repository.CommentRepository
+import com.example.ufanet.feature_app.domain.usecase.AddCommentUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
 import org.koin.dsl.module
 
@@ -11,5 +12,8 @@ val moduleComment = module {
     }
     factory<GetCommentsForApplicationUseCase> {
         GetCommentsForApplicationUseCase(get())
+    }
+    factory<AddCommentUseCase> {
+        AddCommentUseCase(get())
     }
 }

@@ -6,4 +6,5 @@ sealed class SignInEvent {
     data object SignIn: SignInEvent()
     data object VisualTransformation: SignInEvent()
     data object ExceptionClear: SignInEvent()
+    data object ShowProgressIndicator: SignInEvent()
 }

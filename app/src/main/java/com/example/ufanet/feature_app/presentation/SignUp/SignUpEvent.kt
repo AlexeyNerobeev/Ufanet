@@ -8,4 +8,5 @@ sealed class SignUpEvent {
     data object Registration: SignUpEvent()
     data object VisualTransformation: SignUpEvent()
     data object ExceptionClear: SignUpEvent()
+    data object ShowProgressIndicator: SignUpEvent()
 }

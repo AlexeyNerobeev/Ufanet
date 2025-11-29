@@ -61,12 +61,14 @@ class SignUpVM(
                             )
                         } else{
                             _state.value = state.value.copy(
-                                exception = "Все поля должны быть заполнены!"
+                                exception = "Все поля должны быть заполнены!",
+                                progressIndicator = false
                             )
                         }
                     } catch (ex: Exception){
                         _state.value = state.value.copy(
-                            exception = ex.message.toString()
+                            exception = ex.message.toString(),
+                            progressIndicator = false
                         )
                         Log.e("supabase", ex.message.toString())
                     }
@@ -80,6 +82,11 @@ class SignUpVM(
             is SignUpEvent.ExceptionClear -> {
                 _state.value = state.value.copy(
                     exception = ""
+                )
+            }
+            is SignUpEvent.ShowProgressIndicator -> {
+                _state.value = state.value.copy(
+                    progressIndicator = true
                 )
             }
         }

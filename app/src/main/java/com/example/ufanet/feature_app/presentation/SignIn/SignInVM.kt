@@ -44,6 +44,7 @@ class SignInVM(
                         )
                     } catch (ex: Exception){
                         _state.value = state.value.copy(
+                            progressIndicator = false,
                             exception = ex.message.toString()
                         )
                         Log.e("supabase", ex.message.toString())
@@ -58,6 +59,11 @@ class SignInVM(
             is SignInEvent.ExceptionClear -> {
                 _state.value = state.value.copy(
                     exception = ""
+                )
+            }
+            is SignInEvent.ShowProgressIndicator -> {
+                _state.value = state.value.copy(
+                    progressIndicator = true
                 )
             }
         }

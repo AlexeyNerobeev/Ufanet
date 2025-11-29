@@ -7,5 +7,6 @@ data class SignUpState(
     val password: String = "",
     val visual: Boolean = true,
     val isComplete: Boolean = false,
-    val exception: String = ""
+    val exception: String = "",
+    val progressIndicator: Boolean = false
 )

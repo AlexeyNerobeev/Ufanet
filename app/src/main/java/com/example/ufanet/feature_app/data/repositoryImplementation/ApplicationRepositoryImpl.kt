@@ -3,12 +3,10 @@ package com.example.ufanet.feature_app.data.repositoryImplementation
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
-import com.example.ufanet.feature_app.presentation.Applications.ApplicationsVM
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
-import java.util.Locale.filter
 
 class ApplicationRepositoryImpl : ApplicationRepository {
     override suspend fun addApplication(
@@ -122,5 +120,16 @@ class ApplicationRepositoryImpl : ApplicationRepository {
                 }
             }
         }.decodeSingle<Application>()
+    }
+
+    override suspend fun updateApplicationStatus(applicationId: Int, status: String) {
+        val application = Application(status = status)
+        supabase.from("applications").update(application){
+            filter{
+                and {
+                    eq("id", applicationId)
+                }
+            }
+        }
     }
 }
