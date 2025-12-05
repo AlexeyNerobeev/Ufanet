@@ -5,6 +5,7 @@ import com.example.ufanet.feature_app.presentation.Comments.CommentsVM
 import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeVM
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileEvent
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileVM
+import com.example.ufanet.feature_app.presentation.EmployeeSearch.EmployeeSearchVM
 import com.example.ufanet.feature_app.presentation.Home.HomeVM
 import com.example.ufanet.feature_app.presentation.Profile.ProfileVM
 import com.example.ufanet.feature_app.presentation.SignIn.SignInVM
@@ -36,5 +37,8 @@ val moduleVM = module {
     }
     viewModel<CommentsVM> {
         CommentsVM(get(), get(), get(), get())
+    }
+    viewModel<EmployeeSearchVM> {
+        EmployeeSearchVM()
     }
 }

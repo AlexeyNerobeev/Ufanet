@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = NavRoutes.SignInScreen.route){
+            NavHost(navController = navController, startDestination = NavRoutes.EmployeeSearchScreen.route){
                 composable (NavRoutes.SignInScreen.route) { SignInScreen(navController) }
                 composable (NavRoutes.SignUpScreen.route) { SignUpScreen(navController)}
                 composable (NavRoutes.HomeScreen.route) { HomeScreen(navController)}
