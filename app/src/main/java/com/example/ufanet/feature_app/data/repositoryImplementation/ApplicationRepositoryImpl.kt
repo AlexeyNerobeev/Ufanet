@@ -1,5 +1,6 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
+import com.example.ufanet.App
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
@@ -103,7 +104,8 @@ class ApplicationRepositoryImpl : ApplicationRepository {
                 "address",
                 "phone",
                 "description",
-                "status"
+                "status",
+                "comments_count"
             )
         ).decodeList<Application>()
     }
@@ -131,5 +133,53 @@ class ApplicationRepositoryImpl : ApplicationRepository {
                 }
             }
         }
+    }
+
+    override suspend fun updateCommentsCount(applicationId: Int, commentsCount: Int) {
+        val commentsCount = Application(comments_count = commentsCount)
+        supabase.from("applications").update(commentsCount){
+            filter {
+                and {
+                    eq("id", applicationId)
+                }
+            }
+        }
+    }
+
+    override suspend fun getFilterApplication(
+        searchText: String,
+        column: String,
+        status: String,
+        commentsCount: Int
+    ): List<Application> {
+        return supabase.postgrest["applications"].select(
+            columns = Columns.list(
+                "id",
+                "company_name",
+                "phone",
+                "description",
+                "address",
+                "status",
+                "comments_count"
+            )
+        ){
+            filter {
+                and {
+                    if (searchText.isNotEmpty()) {
+                        ilike(column, "%${searchText}%")
+                    }
+                    if (status.isNotEmpty()) {
+                        eq("status", status)
+                    }
+                    if (commentsCount >= 0) {
+                        if (commentsCount > 2) {
+                            gt("comments_count", 2)
+                        } else {
+                            eq("comments_count", commentsCount)
+                        }
+                    }
+                }
+            }
+        }.decodeList<Application>()
     }
 }

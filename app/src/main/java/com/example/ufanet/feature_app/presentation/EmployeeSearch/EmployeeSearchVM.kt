@@ -1,13 +1,17 @@
 package com.example.ufanet.feature_app.presentation.EmployeeSearch
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class EmployeeSearchVM : ViewModel() {
+class EmployeeSearchVM(
+    private val getFilterApplicationUseCase: GetFilterApplicationUseCase
+) : ViewModel() {
     private val _state = mutableStateOf(EmployeeSearchState())
     val state: State<EmployeeSearchState> = _state
 
@@ -66,28 +70,38 @@ class EmployeeSearchVM : ViewModel() {
                         else -> ""
                     },
                     filterStatus = when (state.value.selectStatus) {
+                        0 -> ""
                         1 -> "Не принята"
                         2 -> "Принята"
                         3 -> "Выполнена"
                         else -> ""
                     },
                     filterComments = when (state.value.selectComments) {
-                        1 -> "Нет"
-                        2 -> "Один"
-                        3 -> "Два"
-                        4 -> "Больше двух"
-                        else -> ""
+                        0 -> -1
+                        1 -> 0
+                        2 -> 1
+                        3 -> 2
+                        4 -> 3
+                        else -> -1
                     },
                     showFilter = false
                 )
             }
-
             is EmployeeSearchEvent.Search -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    if (state.value.filterStatus.isNotEmpty()){
-
-                    } else{
-
+                if(state.value.searchText.isNotEmpty()) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        try {
+                            _state.value = state.value.copy(
+                                applicationsList = getFilterApplicationUseCase(
+                                    state.value.searchText,
+                                    state.value.filterSearch,
+                                    state.value.filterStatus,
+                                    state.value.filterComments
+                                )
+                            )
+                        } catch (ex: Exception) {
+                            Log.e("supabase", ex.message.toString())
+                        }
                     }
                 }
             }

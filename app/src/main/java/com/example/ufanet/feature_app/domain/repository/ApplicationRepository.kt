@@ -18,4 +18,6 @@ interface ApplicationRepository {
     suspend fun getAllApplications(): List<Application>
     suspend fun getApplicationStatus(applicationId: Int): Application
     suspend fun updateApplicationStatus(applicationId: Int, status: String)
+    suspend fun updateCommentsCount(applicationId: Int, commentsCount: Int)
+    suspend fun getFilterApplication(searchText: String, column: String, status: String, commentsCount: Int): List<Application>
 }

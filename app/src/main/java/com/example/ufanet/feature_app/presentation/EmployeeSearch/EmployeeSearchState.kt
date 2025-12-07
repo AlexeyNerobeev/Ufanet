@@ -11,7 +11,7 @@ data class EmployeeSearchState (
     val selectStatus: Int = 0,
     val selectComments: Int = 0,
     val applicationsList: List<Application> = listOf(),
-    val filterSearch: String = "",
+    val filterSearch: String = "company_name",
     val filterStatus: String = "",
-    val filterComments: String = ""
+    val filterComments: Int = 0
 )

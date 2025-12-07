@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.AddCommentUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationCommentsCountUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationStatusUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,8 @@ class CommentsVM(
     private val getApplicationStatusUseCase: GetApplicationStatusUseCase,
     private val getCommentsForApplicationUseCase: GetCommentsForApplicationUseCase,
     private val addCommentUseCase: AddCommentUseCase,
-    private val updateApplicationStatusUseCase: UpdateApplicationStatusUseCase
+    private val updateApplicationStatusUseCase: UpdateApplicationStatusUseCase,
+    private val updateApplicationCommentsCountUseCase: UpdateApplicationCommentsCountUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(CommentsState())
     val state: State<CommentsState> = _state
@@ -72,6 +74,8 @@ class CommentsVM(
                     try {
                         if (state.value.commentDescription.isNotEmpty() && state.value.commentDescription != null){
                             addCommentUseCase.invoke(commentText = state.value.commentDescription, applicationId = state.value.applicationId)
+                            updateApplicationCommentsCountUseCase.invoke(applicationId = state.value.applicationId,
+                                commentsCount = state.value.commentsList.size + 1)
                             _state.value = state.value.copy(
                                 isComplete = true
                             )
