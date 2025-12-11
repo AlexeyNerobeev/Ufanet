@@ -14,4 +14,5 @@ sealed class NavRoutes(val route: String) {
     data object CommentsScreen: NavRoutes("CommentsScreen?itemId={itemId}"){
         fun createRoute(itemId: Int) = "CommentsScreen?itemId=$itemId"
     }
+    data object SplashScreen: NavRoutes("SplashScreen")
 }

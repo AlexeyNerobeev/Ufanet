@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -29,25 +30,58 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
-import com.example.ufanet.common.BottomNavigation
 import com.example.ufanet.common.CongratsAlertDialog
 import com.example.ufanet.common.EmployeeBottomNavigation
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.ptSansBold
-import com.example.ufanet.feature_app.presentation.Profile.ProfileEvent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = koinViewModel()) {
     val state = vm.state.value
-    LaunchedEffect(key1 = null) {
-        vm.onEvent(ProfileEvent.GetProfile)
+    LaunchedEffect(key1 = null, key2 = !state.signOut) {
+        vm.onEvent(EmployeeProfileEvent.GetProfile)
+        if(state.signOut){
+            navController.navigate(NavRoutes.SignInScreen.route)
+        }
     }
     if(state.info.isNotEmpty()){
         CongratsAlertDialog(state.info) {
-            vm.onEvent(ProfileEvent.ClearInfo)
+            vm.onEvent(EmployeeProfileEvent.ClearInfo)
         }
+    }
+    if(state.alertSignOut){
+        AlertDialog(
+            containerColor = Color.White,
+            onDismissRequest = {vm.onEvent(EmployeeProfileEvent.ShowAlertSignOut)},
+            title = {
+                Text(text = "Вы уверены, что хотите выйти?",
+                    color = Color.Black,
+                    fontSize = 20.sp)
+            },
+            text = {
+                Text(text = "Для подтверждения нажмите ОК",
+                    color = Color.Black,
+                    fontSize = 16.sp)
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        vm.onEvent(EmployeeProfileEvent.SignOut)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(com.example.ufanet.R.color.Orange),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "ОК",
+                        color = Color.White,
+                        fontSize = 14.sp)
+                }
+            }
+        )
     }
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -85,13 +119,16 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
                         fontSize = 20.sp,
                         fontFamily = ptSansBold
                     )
-                    Icon(
-                        painter = painterResource(R.drawable.account_icon),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
+                    IconButton(onClick = {
+                        vm.onEvent(EmployeeProfileEvent.ShowAlertSignOut)
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.signout_icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
                 }
             }
             Column(modifier = Modifier
@@ -118,7 +155,7 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
                         .padding(top = 40.dp))
                 OutlinedTextField(value = state.companyName,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.EnteredCompanyName(it))
+                        vm.onEvent(EmployeeProfileEvent.EnteredCompanyName(it))
                     },
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier
@@ -143,7 +180,7 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
                         .padding(top = 26.dp))
                 OutlinedTextField(value = state.phone,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.EnteredPhone(it))
+                        vm.onEvent(EmployeeProfileEvent.EnteredPhone(it))
                     },
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier
@@ -161,15 +198,17 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
                     singleLine = true
                 )
                 Button(onClick = {
-                    vm.onEvent(ProfileEvent.UpdateProfile)
+                    vm.onEvent(EmployeeProfileEvent.UpdateProfile)
 
                 },
                     modifier = Modifier
                         .padding(top = 50.dp)
                         .height(60.dp)
                         .fillMaxWidth()
-                        .background(colorResource(com.example.ufanet.R.color.Orange),
-                            RoundedCornerShape(15.dp)),
+                        .background(
+                            colorResource(com.example.ufanet.R.color.Orange),
+                            RoundedCornerShape(15.dp)
+                        ),
                     shape = RoundedCornerShape(15.dp),
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,

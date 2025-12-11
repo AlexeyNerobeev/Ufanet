@@ -7,13 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.models.Profile
 import com.example.ufanet.feature_app.domain.usecase.GetProfileUseCase
+import com.example.ufanet.feature_app.domain.usecase.SignOutUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateProfileUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ProfileVM(
     private val getProfileUseCase: GetProfileUseCase,
-    private val updateProfileUseCase: UpdateProfileUseCase
+    private val updateProfileUseCase: UpdateProfileUseCase,
+    private val signOutUseCase: SignOutUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(ProfileState())
     val state: State<ProfileState> = _state
@@ -61,6 +63,23 @@ class ProfileVM(
                         Log.e("supabase", ex.message.toString())
                     }
                 }
+            }
+            is ProfileEvent.SignOut -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    try {
+                        signOutUseCase.invoke()
+                        _state.value = state.value.copy(
+                            signOut = true
+                        )
+                    } catch (ex: Exception){
+                        Log.e("supabase", ex.message.toString())
+                    }
+                }
+            }
+            is ProfileEvent.ShowAlertSignOut -> {
+                _state.value = state.value.copy(
+                    alertSignOut = !state.value.alertSignOut
+                )
             }
         }
     }

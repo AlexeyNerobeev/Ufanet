@@ -1,7 +1,6 @@
 package com.example.ufanet.feature_app.presentation.Profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,8 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,22 +34,54 @@ import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
 import com.example.ufanet.common.BottomNavigation
 import com.example.ufanet.common.CongratsAlertDialog
-import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.ptSansBold
-import com.example.ufanet.feature_app.presentation.SignUp.SignUpEvent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel()) {
     val state = vm.state.value
-    LaunchedEffect(key1 = null) {
+    LaunchedEffect(key1 = null, key2 = !state.signOut) {
         vm.onEvent(ProfileEvent.GetProfile)
+        if(state.signOut){
+            navController.navigate(NavRoutes.SignInScreen.route)
+        }
     }
     if(state.info.isNotEmpty()){
         CongratsAlertDialog(state.info) {
             vm.onEvent(ProfileEvent.ClearInfo)
         }
+    }
+    if(state.alertSignOut){
+        AlertDialog(
+            containerColor = Color.White,
+            onDismissRequest = {vm.onEvent(ProfileEvent.ShowAlertSignOut)},
+            title = {
+                Text(text = "Вы уверены, что хотите выйти?",
+                    color = Color.Black,
+                    fontSize = 20.sp)
+            },
+            text = {
+                Text(text = "Для подтверждения нажмите ОК",
+                    color = Color.Black,
+                    fontSize = 16.sp)
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        vm.onEvent(ProfileEvent.SignOut)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(com.example.ufanet.R.color.Orange),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "ОК",
+                        color = Color.White,
+                        fontSize = 14.sp)
+                }
+            }
+        )
     }
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -89,13 +119,16 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
                         fontSize = 20.sp,
                         fontFamily = ptSansBold
                     )
-                    Icon(
-                        painter = painterResource(R.drawable.account_icon),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
+                    IconButton(onClick = {
+                        vm.onEvent(ProfileEvent.ShowAlertSignOut)
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.signout_icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
                 }
             }
             Column(modifier = Modifier

@@ -19,6 +19,7 @@ import com.example.ufanet.feature_app.presentation.Home.HomeScreen
 import com.example.ufanet.feature_app.presentation.Profile.ProfileScreen
 import com.example.ufanet.feature_app.presentation.SignIn.SignInScreen
 import com.example.ufanet.feature_app.presentation.SignUp.SignUpScreen
+import com.example.ufanet.feature_app.presentation.Splash.SplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = NavRoutes.EmployeeSearchScreen.route){
+            NavHost(navController = navController, startDestination = NavRoutes.SplashScreen.route){
                 composable (NavRoutes.SignInScreen.route) { SignInScreen(navController) }
                 composable (NavRoutes.SignUpScreen.route) { SignUpScreen(navController)}
                 composable (NavRoutes.HomeScreen.route) { HomeScreen(navController)}
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
                     CommentsScreen(itemId = itemId, navController = navController)
                 }
+                composable(NavRoutes.SplashScreen.route) { SplashScreen(navController) }
             }
         }
     }

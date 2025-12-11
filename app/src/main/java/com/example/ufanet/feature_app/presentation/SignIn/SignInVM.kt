@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignInUseCase
-import io.ktor.websocket.FrameParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

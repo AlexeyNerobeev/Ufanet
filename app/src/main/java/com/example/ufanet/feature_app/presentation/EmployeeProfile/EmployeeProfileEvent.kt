@@ -6,4 +6,6 @@ sealed class EmployeeProfileEvent {
     data object UpdateProfile: EmployeeProfileEvent()
     data object GetProfile: EmployeeProfileEvent()
     data object ClearInfo: EmployeeProfileEvent()
+    data object SignOut: EmployeeProfileEvent()
+    data object ShowAlertSignOut: EmployeeProfileEvent()
 }

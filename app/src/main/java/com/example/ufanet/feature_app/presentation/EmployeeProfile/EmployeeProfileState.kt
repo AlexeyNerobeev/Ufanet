@@ -5,5 +5,7 @@ data class EmployeeProfileState(
     val email: String = "",
     val phone: String = "",
     val companyName: String = "",
-    val info: String = ""
+    val info: String = "",
+    val signOut: Boolean = false,
+    val alertSignOut: Boolean = false
 )
