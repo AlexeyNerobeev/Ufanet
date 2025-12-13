@@ -2,6 +2,7 @@ package com.example.ufanet.feature_app.presentation.Comments
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import com.example.ufanet.R
 import com.example.ufanet.common.EmployeeBottomNavigation
 import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
+import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
 import com.example.ufanet.feature_app.presentation.SignIn.SignInEvent
 import org.koin.androidx.compose.koinViewModel
@@ -54,6 +56,8 @@ fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = k
         if (itemId > 0) {
             vm.onEvent(CommentsEvent.GetApplicationId(itemId))
             vm.onEvent(CommentsEvent.GetAllInfo)
+        } else{
+            vm.onEvent(CommentsEvent.ShowNotSelectItems)
         }
     }
     if(state.error.isNotEmpty()){
@@ -62,233 +66,306 @@ fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = k
         }
     }
     Scaffold(modifier = Modifier.fillMaxSize()){ innerPadding ->
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-            .background(Color.White)) {
-            Text(text = "Комментарии к заявке",
-                color = Color.Black,
-                fontFamily = ptSansBold,
-                fontSize = 25.sp,
-                modifier = Modifier
-                    .padding(top = 15.dp)
-                    .align(Alignment.CenterHorizontally))
-            Column(modifier = Modifier
-                .padding(top = 10.dp)
-                .padding(horizontal = 36.dp)) {
-                Text(text = "Статус заявки: ${state.applicationStatus}",
-                    color = Color.Black,
-                    fontSize = 15.sp,
-                    fontFamily = ptSansBold)
-                LazyRow(modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()) {
-                    item {
-                        Button(
-                            onClick = {
-                                vm.onEvent(CommentsEvent.ApplicationStatusChangeNotAccepted)
-                            },
+        if(state.showNotSelectItems){
+            Box(modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(Color.White),
+                contentAlignment = Alignment.Center){
+                Column {
+                    Text(text = "Вы не выбрали заявку",
+                        fontSize = 20.sp,
+                        fontFamily = ptSansBold,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally))
+                    Row(modifier = Modifier
+                        .padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.Center) {
+                        Text(text = "Перейти на главную->",
+                            color = Color.Blue,
+                            fontSize = 15.sp,
+                            fontFamily = interRegular,
                             modifier = Modifier
-                                .background(
-                                    color = colorResource(R.color.FillTextField),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                                .border(
-                                    width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                    color = colorResource(R.color.Orange)
-                                ),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black,
-                                containerColor = colorResource(R.color.FillTextField)
-                            )
-                        ) {
-                            Text(
-                                text = "Не принята",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 16.sp
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                vm.onEvent(CommentsEvent.ApplicationStatusChangeAccepted)
-                            },
-                            modifier = Modifier
-                                .padding(start = 5.dp)
-                                .background(
-                                    color = colorResource(R.color.FillTextField),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                                .border(
-                                    width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                    color = colorResource(R.color.Orange)
-                                ),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black,
-                                containerColor = colorResource(R.color.FillTextField)
-                            )
-                        ) {
-                            Text(
-                                text = "Принята",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 16.sp
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                vm.onEvent(CommentsEvent.ApplicationStatusChangeCompleted)
-                            },
-                            modifier = Modifier
-                                .padding(start = 5.dp)
-                                .background(
-                                    color = colorResource(R.color.FillTextField),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                                .border(
-                                    width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                    color = colorResource(R.color.Orange)
-                                ),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black,
-                                containerColor = colorResource(R.color.FillTextField)
-                            )
-                        ) {
-                            Text(
-                                text = "Выполнена",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                }
-                Text(text = "Комментарии к заявке:",
-                    color = Color.Black,
-                    fontSize = 15.sp,
-                    fontFamily = ptSansBold,
-                    modifier = Modifier
-                        .padding(top = 20.dp))
-                LazyColumn(modifier = Modifier
-                    .padding(top = 10.dp)) {
-                    items(state.commentsList){ item ->
-                        Text(text = ((state.commentsList.indexOf(item)) + 1).toString(),
+                                .clickable{
+                                    navController.navigate(NavRoutes.EmployeeHomeScreen.route)
+                                }
+                        )
+                        Text(text = "|",
                             color = Color.Black,
                             fontSize = 15.sp,
-                            fontFamily = ptSansBold,
+                            fontFamily = interRegular,
                             modifier = Modifier
-                                .padding(top = 15.dp))
-                        TextField(
-                            value = item.comment_text,
-                            onValueChange = {
-
-                            },
+                                .padding(start = 5.dp)
+                        )
+                        Text(text = "Перейти к поиску->",
+                            color = Color.Blue,
+                            fontSize = 15.sp,
+                            fontFamily = interRegular,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp),
-                            colors = TextFieldDefaults.colors(
-                                unfocusedTextColor = Color.Black,
-                                focusedTextColor = Color.Black,
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                focusedIndicatorColor = colorResource(R.color.Orange),
-                                unfocusedIndicatorColor = colorResource(R.color.Orange)
-                            )
+                                .padding(start = 5.dp)
+                                .clickable{
+                                    navController.navigate(NavRoutes.EmployeeSearchScreen.route)
+                                }
                         )
                     }
-                    item {
-                        Column(modifier = Modifier
-                            .padding(top = 30.dp)
-                            .fillMaxWidth()) {
-                            if (!state.newComment) {
-                                Button(
-                                    onClick = {
-                                        vm.onEvent(CommentsEvent.AddNewComment)
-                                    },
-                                    modifier = Modifier
-                                        .align(Alignment.CenterHorizontally)
-                                        .background(
-                                            colorResource(R.color.Orange),
-                                            RoundedCornerShape(15.dp)
-                                        ),
-                                    shape = RoundedCornerShape(15.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        contentColor = Color.White,
-                                        containerColor = Color.Transparent
+                }
+            }
+        } else {
+
+
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .background(Color.White)
+            ) {
+                Text(
+                    text = "Комментарии к заявке",
+                    color = Color.Black,
+                    fontFamily = ptSansBold,
+                    fontSize = 25.sp,
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .padding(horizontal = 36.dp)
+                ) {
+                    Text(
+                        text = "Статус заявки: ${state.applicationStatus}",
+                        color = Color.Black,
+                        fontSize = 15.sp,
+                        fontFamily = ptSansBold
+                    )
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        item {
+                            Button(
+                                onClick = {
+                                    vm.onEvent(CommentsEvent.ApplicationStatusChangeNotAccepted)
+                                },
+                                modifier = Modifier
+                                    .background(
+                                        color = colorResource(R.color.FillTextField),
+                                        shape = RoundedCornerShape(15.dp)
                                     )
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.add_icon),
-                                        contentDescription = null,
-                                        tint = Color.Unspecified
+                                    .border(
+                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
+                                        color = colorResource(R.color.Orange)
+                                    ),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.Black,
+                                    containerColor = colorResource(R.color.FillTextField)
+                                )
+                            ) {
+                                Text(
+                                    text = "Не принята",
+                                    color = Color.Black,
+                                    fontFamily = interBold,
+                                    fontSize = 16.sp
+                                )
+                            }
+                            Button(
+                                onClick = {
+                                    vm.onEvent(CommentsEvent.ApplicationStatusChangeAccepted)
+                                },
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .background(
+                                        color = colorResource(R.color.FillTextField),
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .border(
+                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
+                                        color = colorResource(R.color.Orange)
+                                    ),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.Black,
+                                    containerColor = colorResource(R.color.FillTextField)
+                                )
+                            ) {
+                                Text(
+                                    text = "Принята",
+                                    color = Color.Black,
+                                    fontFamily = interBold,
+                                    fontSize = 16.sp
+                                )
+                            }
+                            Button(
+                                onClick = {
+                                    vm.onEvent(CommentsEvent.ApplicationStatusChangeCompleted)
+                                },
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .background(
+                                        color = colorResource(R.color.FillTextField),
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .border(
+                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
+                                        color = colorResource(R.color.Orange)
+                                    ),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.Black,
+                                    containerColor = colorResource(R.color.FillTextField)
+                                )
+                            ) {
+                                Text(
+                                    text = "Выполнена",
+                                    color = Color.Black,
+                                    fontFamily = interBold,
+                                    fontSize = 16.sp
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        text = "Комментарии к заявке:",
+                        color = Color.Black,
+                        fontSize = 15.sp,
+                        fontFamily = ptSansBold,
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    ) {
+                        items(state.commentsList) { item ->
+                            Text(
+                                text = ((state.commentsList.indexOf(item)) + 1).toString(),
+                                color = Color.Black,
+                                fontSize = 15.sp,
+                                fontFamily = ptSansBold,
+                                modifier = Modifier
+                                    .padding(top = 15.dp)
+                            )
+                            TextField(
+                                value = item.comment_text,
+                                onValueChange = {
+
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp),
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedTextColor = Color.Black,
+                                    focusedTextColor = Color.Black,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    focusedIndicatorColor = colorResource(R.color.Orange),
+                                    unfocusedIndicatorColor = colorResource(R.color.Orange)
+                                )
+                            )
+                        }
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .padding(top = 30.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                if (!state.newComment) {
+                                    Button(
+                                        onClick = {
+                                            vm.onEvent(CommentsEvent.AddNewComment)
+                                        },
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally)
+                                            .background(
+                                                colorResource(R.color.Orange),
+                                                RoundedCornerShape(15.dp)
+                                            ),
+                                        shape = RoundedCornerShape(15.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            contentColor = Color.White,
+                                            containerColor = Color.Transparent
+                                        )
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.add_icon),
+                                            contentDescription = null,
+                                            tint = Color.Unspecified
+                                        )
+                                    }
+                                }
+                                if (state.newComment) {
+                                    Text(
+                                        text = "Новый комментарий",
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                        fontFamily = ptSansBold,
+                                        modifier = Modifier
+                                            .padding(top = 20.dp)
+                                    )
+                                    TextField(
+                                        value = state.commentDescription,
+                                        onValueChange = {
+                                            vm.onEvent(CommentsEvent.EnteredCommentDescription(it))
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(100.dp),
+                                        colors = TextFieldDefaults.colors(
+                                            unfocusedTextColor = Color.Black,
+                                            focusedTextColor = Color.Black,
+                                            unfocusedContainerColor = Color.Transparent,
+                                            focusedContainerColor = Color.Transparent,
+                                            focusedIndicatorColor = colorResource(R.color.Orange),
+                                            unfocusedIndicatorColor = colorResource(R.color.Orange)
+                                        )
                                     )
                                 }
                             }
-                            if (state.newComment) {
-                                Text(
-                                    text = "Новый комментарий",
-                                    color = Color.Black,
-                                    fontSize = 15.sp,
-                                    fontFamily = ptSansBold,
-                                    modifier = Modifier
-                                        .padding(top = 20.dp)
+                        }
+                        item {
+                            Button(
+                                onClick = {
+                                    if (state.currentApplicationStatus != state.applicationStatus
+                                        || (state.commentDescription.isNotEmpty()
+                                                && state.commentDescription != null)
+                                    ) {
+                                        vm.onEvent(CommentsEvent.ShowProcessIndicator)
+                                        vm.onEvent(CommentsEvent.UpdateStatus)
+                                        vm.onEvent(CommentsEvent.WriteNewComment)
+                                    } else {
+                                        vm.onEvent(CommentsEvent.ShowError)
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(top = 50.dp)
+                                    .height(60.dp)
+                                    .fillMaxWidth()
+                                    .background(
+                                        colorResource(R.color.Orange),
+                                        RoundedCornerShape(15.dp)
+                                    ),
+                                shape = RoundedCornerShape(15.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    containerColor = Color.Transparent
                                 )
-                                TextField(
-                                    value = state.commentDescription,
-                                    onValueChange = {
-                                        vm.onEvent(CommentsEvent.EnteredCommentDescription(it))
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(100.dp),
-                                    colors = TextFieldDefaults.colors(
-                                        unfocusedTextColor = Color.Black,
-                                        focusedTextColor = Color.Black,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        focusedContainerColor = Color.Transparent,
-                                        focusedIndicatorColor = colorResource(R.color.Orange),
-                                        unfocusedIndicatorColor = colorResource(R.color.Orange)
+                            ) {
+                                if (!state.progressIndicator) {
+                                    Text(
+                                        text = "Сохранить",
+                                        color = Color.White,
+                                        fontFamily = interBold,
+                                        fontSize = 18.sp
                                     )
-                                )
+                                } else {
+                                    CircularProgressIndicator(
+                                        color = Color.White
+                                    )
+                                }
                             }
+                            Spacer(modifier = Modifier.height(100.dp))
                         }
-                    }
-                    item {
-                        Button(onClick = {
-                            if (state.currentApplicationStatus != state.applicationStatus
-                                || (state.commentDescription.isNotEmpty()
-                                        && state.commentDescription != null)){
-                                vm.onEvent(CommentsEvent.ShowProcessIndicator)
-                                vm.onEvent(CommentsEvent.UpdateStatus)
-                                vm.onEvent(CommentsEvent.WriteNewComment)
-                            } else{
-                                vm.onEvent(CommentsEvent.ShowError)
-                            }
-                        },
-                            modifier = Modifier
-                                .padding(top = 50.dp)
-                                .height(60.dp)
-                                .fillMaxWidth()
-                                .background(colorResource(R.color.Orange),
-                                    RoundedCornerShape(15.dp)),
-                            shape = RoundedCornerShape(15.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = Color.Transparent
-                            )) {
-                            if (!state.progressIndicator){
-                                Text(text = "Сохранить",
-                                    color = Color.White,
-                                    fontFamily = interBold,
-                                    fontSize = 18.sp
-                                )
-                            } else{
-                                CircularProgressIndicator(
-                                    color = Color.White
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(100.dp))
                     }
                 }
             }

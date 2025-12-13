@@ -44,7 +44,11 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
     LaunchedEffect(key1 = null, key2 = !state.signOut) {
         vm.onEvent(EmployeeProfileEvent.GetProfile)
         if(state.signOut){
-            navController.navigate(NavRoutes.SignInScreen.route)
+            navController.navigate(NavRoutes.SignInScreen.route){
+                popUpTo(0){
+                    inclusive = true
+                }
+            }
         }
     }
     if(state.info.isNotEmpty()){

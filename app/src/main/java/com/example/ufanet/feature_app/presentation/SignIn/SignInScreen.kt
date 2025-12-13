@@ -53,9 +53,17 @@ fun SignInScreen(navController: NavController, vm: SignInVM = koinViewModel()) {
     LaunchedEffect(key1 = !state.isComplete) {
         if(state.isComplete){
             if(state.status == "клиент"){
-                navController.navigate(NavRoutes.HomeScreen.route)
+                navController.navigate(NavRoutes.HomeScreen.route){
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
             } else if(state.status == "сотрудник"){
-                navController.navigate(NavRoutes.EmployeeHomeScreen.route)
+                navController.navigate(NavRoutes.EmployeeHomeScreen.route){
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
             }
         }
     }

@@ -13,4 +13,5 @@ sealed class CommentsEvent {
     data object ShowProcessIndicator: CommentsEvent()
     data object ErrorClear: CommentsEvent()
     data object ShowError: CommentsEvent()
+    data object ShowNotSelectItems: CommentsEvent()
 }

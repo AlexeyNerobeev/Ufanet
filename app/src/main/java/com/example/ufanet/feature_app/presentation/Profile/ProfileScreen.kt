@@ -44,7 +44,11 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
     LaunchedEffect(key1 = null, key2 = !state.signOut) {
         vm.onEvent(ProfileEvent.GetProfile)
         if(state.signOut){
-            navController.navigate(NavRoutes.SignInScreen.route)
+            navController.navigate(NavRoutes.SignInScreen.route){
+                popUpTo(0){
+                    inclusive = true
+                }
+            }
         }
     }
     if(state.info.isNotEmpty()){
@@ -72,7 +76,7 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
                         vm.onEvent(ProfileEvent.SignOut)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(com.example.ufanet.R.color.Orange),
+                        containerColor = colorResource(R.color.Orange),
                         contentColor = Color.White
                     )
                 ) {
@@ -163,10 +167,10 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
                         .fillMaxWidth()
                         .height(50.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = colorResource(com.example.ufanet.R.color.StrokeTextField),
-                        focusedBorderColor = colorResource(com.example.ufanet.R.color.StrokeTextField),
-                        unfocusedContainerColor = colorResource(com.example.ufanet.R.color.FillTextField),
-                        focusedContainerColor = colorResource(com.example.ufanet.R.color.FillTextField),
+                        unfocusedBorderColor = colorResource(R.color.StrokeTextField),
+                        focusedBorderColor = colorResource(R.color.StrokeTextField),
+                        unfocusedContainerColor = colorResource(R.color.FillTextField),
+                        focusedContainerColor = colorResource(R.color.FillTextField),
                         unfocusedTextColor = Color.Black,
                         focusedTextColor = Color.Black
                     ),
@@ -188,10 +192,10 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
                         .fillMaxWidth()
                         .height(50.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = colorResource(com.example.ufanet.R.color.StrokeTextField),
-                        focusedBorderColor = colorResource(com.example.ufanet.R.color.StrokeTextField),
-                        unfocusedContainerColor = colorResource(com.example.ufanet.R.color.FillTextField),
-                        focusedContainerColor = colorResource(com.example.ufanet.R.color.FillTextField),
+                        unfocusedBorderColor = colorResource(R.color.StrokeTextField),
+                        focusedBorderColor = colorResource(R.color.StrokeTextField),
+                        unfocusedContainerColor = colorResource(R.color.FillTextField),
+                        focusedContainerColor = colorResource(R.color.FillTextField),
                         unfocusedTextColor = Color.Black,
                         focusedTextColor = Color.Black
                     ),
@@ -205,7 +209,7 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel())
                         .padding(top = 50.dp)
                         .height(60.dp)
                         .fillMaxWidth()
-                        .background(colorResource(com.example.ufanet.R.color.Orange),
+                        .background(colorResource(R.color.Orange),
                             RoundedCornerShape(15.dp)),
                     shape = RoundedCornerShape(15.dp),
                     colors = ButtonDefaults.buttonColors(

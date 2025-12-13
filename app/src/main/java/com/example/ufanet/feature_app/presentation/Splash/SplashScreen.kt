@@ -26,12 +26,24 @@ fun SplashScreen(navController: NavController, vm: SplashScreenVM = koinViewMode
         vm.onEvent(SplashScreenEvent.GetCurrentUserId)
         if (state.goHome) {
             if (state.status == "клиент") {
-                navController.navigate(NavRoutes.HomeScreen.route)
+                navController.navigate(NavRoutes.HomeScreen.route){
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
             } else if (state.status == "сотрудник") {
-                navController.navigate(NavRoutes.EmployeeHomeScreen.route)
+                navController.navigate(NavRoutes.EmployeeHomeScreen.route){
+                    popUpTo(0){
+                        inclusive = true
+                    }
+                }
             }
         } else if (state.goSignIn) {
-            navController.navigate(NavRoutes.SignInScreen.route)
+            navController.navigate(NavRoutes.SignInScreen.route){
+                popUpTo(0){
+                    inclusive = true
+                }
+            }
         }
     }
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

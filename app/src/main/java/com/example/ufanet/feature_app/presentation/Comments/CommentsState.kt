@@ -11,5 +11,6 @@ data class CommentsState(
     val isComplete: Boolean = false,
     val commentsList: List<Comment> = listOf(),
     val progressIndicator: Boolean = false,
-    val error: String = ""
+    val error: String = "",
+    val showNotSelectItems: Boolean = false
 )

@@ -51,7 +51,11 @@ fun SignUpScreen(navController: NavController, vm: SignUpVM = koinViewModel()) {
     val state = vm.state.value
     LaunchedEffect(key1 = !state.isComplete) {
         if(state.isComplete){
-            navController.navigate(NavRoutes.HomeScreen.route)
+            navController.navigate(NavRoutes.HomeScreen.route){
+                popUpTo(0){
+                    inclusive = true
+                }
+            }
         }
     }
     if(state.exception.isNotEmpty()){
