@@ -6,6 +6,7 @@ import com.example.ufanet.feature_app.domain.usecase.GetCurrentUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignInUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignOutUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignUpUseCase
+import com.example.ufanet.feature_app.domain.usecase.ValidateCredentialsUseCase
 import org.koin.dsl.module
 
 val moduleAuth = module {
@@ -23,5 +24,8 @@ val moduleAuth = module {
     }
     factory<SignOutUseCase> {
         SignOutUseCase(get())
+    }
+    factory<ValidateCredentialsUseCase>{
+        ValidateCredentialsUseCase()
     }
 }

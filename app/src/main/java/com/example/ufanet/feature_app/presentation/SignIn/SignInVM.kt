@@ -7,13 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignInUseCase
+import com.example.ufanet.feature_app.domain.usecase.ValidateCredentialsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SignInVM(
     private val signInUseCase: SignInUseCase,
-    private val getProfileStatusUseCase: GetProfileStatusUseCase
+    private val getProfileStatusUseCase: GetProfileStatusUseCase,
+    private val validateCredentialsUseCase: ValidateCredentialsUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(SignInState())
     val state: State<SignInState> = _state
@@ -31,22 +33,34 @@ class SignInVM(
                 )
             }
             is SignInEvent.SignIn -> {
-                viewModelScope.launch(Dispatchers.IO){
-                    try {
-                        signInUseCase.invoke(state.value.email, state.value.password)
-                        delay(1000)
-                        _state.value = state.value.copy(
-                            status = getProfileStatusUseCase.invoke().status
-                        )
-                        _state.value = state.value.copy(
-                            isComplete = true
-                        )
-                    } catch (ex: Exception){
-                        _state.value = state.value.copy(
-                            progressIndicator = false,
-                            exception = ex.message.toString()
-                        )
-                        Log.e("supabase", ex.message.toString())
+                val validationResult = validateCredentialsUseCase.invoke(
+                    state.value.email.trim(),
+                    state.value.password
+                )
+                if (!validationResult.isValid) {
+                    _state.value = state.value.copy(
+                        emailError = validationResult.emailError,
+                        passwordError = validationResult.passwordError,
+                        progressIndicator = false
+                    )
+                } else {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        try {
+                            signInUseCase.invoke(state.value.email, state.value.password)
+                            delay(1000)
+                            _state.value = state.value.copy(
+                                status = getProfileStatusUseCase.invoke().status
+                            )
+                            _state.value = state.value.copy(
+                                isComplete = true
+                            )
+                        } catch (ex: Exception) {
+                            _state.value = state.value.copy(
+                                progressIndicator = false,
+                                exception = ex.message.toString()
+                            )
+                            Log.e("supabase", ex.message.toString())
+                        }
                     }
                 }
             }
@@ -57,7 +71,9 @@ class SignInVM(
             }
             is SignInEvent.ExceptionClear -> {
                 _state.value = state.value.copy(
-                    exception = ""
+                    exception = "",
+                    emailError = "",
+                    passwordError = ""
                 )
             }
             is SignInEvent.ShowProgressIndicator -> {

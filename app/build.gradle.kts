@@ -42,6 +42,16 @@ android {
 
 dependencies {
 
+    // Test dependencies
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Для Android тестов
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.5.4")
+    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.5.4")
+
     //coil
     implementation("io.coil-kt:coil-compose:1.3.1")
 
@@ -80,4 +90,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(kotlin("test"))
 }

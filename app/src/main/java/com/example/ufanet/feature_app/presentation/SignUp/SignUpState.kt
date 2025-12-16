@@ -8,5 +8,7 @@ data class SignUpState(
     val visual: Boolean = true,
     val isComplete: Boolean = false,
     val exception: String = "",
-    val progressIndicator: Boolean = false
+    val progressIndicator: Boolean = false,
+    val emailError: String = "",
+    val passwordError: String = ""
 )

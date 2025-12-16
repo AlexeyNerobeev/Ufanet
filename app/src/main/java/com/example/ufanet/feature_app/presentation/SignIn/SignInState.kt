@@ -7,5 +7,7 @@ data class SignInState(
     val isComplete: Boolean = false,
     val exception: String = "",
     val status: String = "",
-    val progressIndicator: Boolean = false
+    val progressIndicator: Boolean = false,
+    val emailError: String = "",
+    val passwordError: String = ""
 )

@@ -71,6 +71,14 @@ fun SignInScreen(navController: NavController, vm: SignInVM = koinViewModel()) {
         ErrorAlertDialog(state.exception) {
             vm.onEvent(SignInEvent.ExceptionClear)
         }
+    } else if(state.emailError.isNotEmpty()){
+        ErrorAlertDialog(state.emailError) {
+            vm.onEvent(SignInEvent.ExceptionClear)
+        }
+    } else if(state.passwordError.isNotEmpty()){
+        ErrorAlertDialog(state.passwordError) {
+            vm.onEvent(SignInEvent.ExceptionClear)
+        }
     }
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(

@@ -16,10 +16,10 @@ import org.koin.dsl.module
 
 val moduleVM = module {
     viewModel<SignInVM>{
-        SignInVM(get(), get())
+        SignInVM(get(), get(), get())
     }
     viewModel<SignUpVM>{
-        SignUpVM(get(), get())
+        SignUpVM(get(), get(), get())
     }
     viewModel<ApplicationsVM>{
         ApplicationsVM(get(), get(), get())
