@@ -89,6 +89,9 @@ class ApplicationsVM(
                 }
             }
             is ApplicationsEvent.UpdateApplication -> {
+                _state.value = state.value.copy(
+                    isLoading = true
+                )
                 viewModelScope.launch(Dispatchers.IO){
                     try {
                         if(state.value.address != "" &&

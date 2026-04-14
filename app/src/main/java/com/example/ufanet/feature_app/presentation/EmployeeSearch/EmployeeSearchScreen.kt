@@ -7,8 +7,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,29 +19,36 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -51,772 +58,754 @@ import com.example.ufanet.common.EmployeeBottomNavigation
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
-import com.example.ufanet.feature_app.presentation.Comments.CommentsEvent
-import com.example.ufanet.feature_app.presentation.Home.HomeEvent
+import com.example.ufanet.feature_app.domain.models.Application
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun EmployeeSearchScreen(navController: NavController, vm: EmployeeSearchVM = koinViewModel()) {
     val state = vm.state.value
+
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = if (state.showFilter) Color.Black else Color.Unspecified)
-            .alpha(if (state.showFilter) 0.5f else 1f)
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color(0xFFF5F7FA)
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color.White)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(colorResource(R.color.Orange)),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .padding(horizontal = 24.dp)
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = {
-                            navController.popBackStack()
-                        },
-                        enabled = !state.showFilter,
-                        modifier = Modifier
-                            .background(Color.Transparent)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.back_icon),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            vm.onEvent(EmployeeSearchEvent.ShowFilter)
-                        },
-                        enabled = !state.showFilter,
-                        modifier = Modifier
-                            .background(Color.Transparent)
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.filter_icon),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
-                Text(
-                    text = "Поиск",
-                    fontFamily = ptSansBold,
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-            }
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White),
-                userScrollEnabled = !state.showFilter
             ) {
-                item {
-                    OutlinedTextField(
-                        value = state.searchText,
-                        onValueChange = {
-                            vm.onEvent(EmployeeSearchEvent.EnteredSearchText(it))
-                        },
-                        shape = RoundedCornerShape(30.dp),
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp)
+                        .background(
+                            color = colorResource(R.color.Orange),
+                            shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                        )
+                ) {
+                    Row(
                         modifier = Modifier
-                            .padding(top = 15.dp)
-                            .padding(horizontal = 25.dp)
-                            .fillMaxWidth()
-                            .background(
-                                color = Color.Transparent,
-                                shape = RoundedCornerShape(30.dp)
-                            )
-                            .border(
-                                shape = RoundedCornerShape(30.dp),
-                                width = 1.dp,
-                                color = colorResource(R.color.StrokeTextField)
-                            ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(R.color.StrokeTextField),
-                            unfocusedBorderColor = colorResource(R.color.StrokeTextField),
-                            focusedContainerColor = colorResource(R.color.FillTextField),
-                            unfocusedContainerColor = colorResource(R.color.FillTextField)
-                        ),
-                        textStyle = TextStyle(
-                            fontFamily = interRegular,
-                            fontSize = 16.sp,
-                            color = Color.Black
-                        ),
-                        singleLine = true,
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    vm.onEvent(EmployeeSearchEvent.Search)
-                                },
-                                enabled = !state.showFilter
-                            ) {
-                                Icon(
-                                    painterResource(R.drawable.search_icon),
-                                    contentDescription = null,
-                                    tint = Color.Gray
-                                )
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                text = state.placeholder,
-                                color = Color.Gray,
-                                fontFamily = interBold,
-                                fontSize = 14.sp
-                            )
-                        },
-                        enabled = !state.showFilter
-                    )
-                }
-                items(state.applicationsList) { item ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 25.dp)
-                            .padding(top = 15.dp)
-                            .background(
-                                color = colorResource(R.color.FillTextField),
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .clip(shape = RoundedCornerShape(10.dp))
-                            .border(width = 2.dp, Color.LightGray, RoundedCornerShape(10.dp))
-                            .clickable(enabled = !state.showFilter) {
-                                navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
-                            }
+                            .padding(horizontal = 16.dp)
+                            .fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
+                        IconButton(
+                            onClick = { navController.popBackStack() },
+                            enabled = !state.showFilter,
                             modifier = Modifier
-                                .padding(horizontal = 15.dp)
-                                .padding(vertical = 15.dp)
-                                .fillMaxWidth()
+                                .size(40.dp)
+                                .background(
+                                    color = Color.White.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Название\nорганизации:",
-                                    color = Color.Black,
-                                    fontFamily = interBold,
-                                    fontSize = 18.sp
+                            Icon(
+                                painter = painterResource(R.drawable.back_icon),
+                                contentDescription = "Назад",
+                                tint = Color.Unspecified
+                            )
+                        }
+
+                        Text(
+                            text = "Поиск заявок",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontFamily = ptSansBold,
+                            modifier = Modifier.weight(1f),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+
+                        IconButton(
+                            onClick = { vm.onEvent(EmployeeSearchEvent.ShowFilter) },
+                            enabled = !state.showFilter,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = Color.White.copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(12.dp)
                                 )
-                                Text(
-                                    text = item.status,
-                                    color = Color.White,
-                                    fontFamily = ptSansBold,
-                                    fontSize = 14.sp,
-                                    modifier = Modifier
-                                        .background(
-                                            colorResource(R.color.Orange),
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(7.dp)
-                                )
-                            }
-                            Text(
-                                text = item.company_name,
-                                color = Color.Black,
-                                fontFamily = interRegular,
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
-                            Text(
-                                text = "Адрес:",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .padding(top = 10.dp)
-                            )
-                            Text(
-                                text = item.address,
-                                color = Color.Black,
-                                fontFamily = interRegular,
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
-                            Text(
-                                text = "Телефон:",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .padding(top = 10.dp)
-                            )
-                            Text(
-                                text = item.phone,
-                                color = Color.Black,
-                                fontFamily = interRegular,
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
-                            Text(
-                                text = "Описание проблемы:",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .padding(top = 10.dp)
-                            )
-                            Text(
-                                text = item.description,
-                                color = Color.Black,
-                                fontFamily = interRegular,
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.filter_icon),
+                                contentDescription = "Фильтр",
+                                tint = Color.Unspecified
                             )
                         }
                     }
                 }
-                item {
-                    Spacer(
+
+                SearchField(
+                    value = state.searchText,
+                    onValueChange = { vm.onEvent(EmployeeSearchEvent.EnteredSearchText(it)) },
+                    placeholder = state.placeholder,
+                    onSearch = { vm.onEvent(EmployeeSearchEvent.Search) },
+                    enabled = !state.showFilter
+                )
+
+                if (state.applicationsList.isNotEmpty() && !state.showFilter) {
+                    Row(
                         modifier = Modifier
-                            .height(100.dp)
-                    )
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 8.dp, bottom = 4.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = "Найдено заявок: ${state.applicationsList.size}",
+                            color = Color.Gray,
+                            fontSize = 14.sp,
+                            fontFamily = interRegular
+                        )
+                    }
                 }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    userScrollEnabled = !state.showFilter
+                ) {
+                    if (state.applicationsList.isEmpty() && !state.showFilter) {
+                        item {
+                            EmptySearchResult(
+                                searchPerformed = state.searchText.isNotEmpty() ||
+                                        state.selectSearch > 0 ||
+                                        state.selectStatus > 0 ||
+                                        state.selectComments > 0
+                            )
+                        }
+                    } else {
+                        items(state.applicationsList) { item ->
+                            SearchResultCard(
+                                application = item,
+                                onClick = {
+                                    navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
+                                },
+                                enabled = !state.showFilter
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(80.dp))
+                        }
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.BottomCenter),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                EmployeeBottomNavigation(navController, 3)
+            }
+
+            if (state.showFilter) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable { vm.onEvent(EmployeeSearchEvent.ShowFilter) }
+                )
             }
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        EmployeeBottomNavigation(navController, 3)
-    }
+
     AnimatedVisibility(
         visible = state.showFilter,
         enter = slideInVertically(
-            animationSpec = tween(durationMillis = 500),
+            animationSpec = tween(durationMillis = 300),
             initialOffsetY = { fullHeight -> fullHeight }
-        ) + fadeIn(animationSpec = tween(durationMillis = 500)),
+        ) + fadeIn(animationSpec = tween(durationMillis = 300)),
         exit = slideOutVertically(
-            animationSpec = tween(durationMillis = 500),
+            animationSpec = tween(durationMillis = 300),
             targetOffsetY = { fullHeight -> fullHeight }
-        ) + fadeOut(animationSpec = tween(durationMillis = 500))
+        ) + fadeOut(animationSpec = tween(durationMillis = 300))
     ) {
+        var dragOffset by remember { mutableStateOf(0f) }
+
         Box(
-            Modifier
-                .fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures(
+                        onDragEnd = {
+                            if (dragOffset > 100f) {
+                                vm.onEvent(EmployeeSearchEvent.ShowFilter)
+                            }
+                            dragOffset = 0f
+                        },
+                        onDragCancel = { dragOffset = 0f },
+                        onVerticalDrag = { _, dragAmount ->
+                            dragOffset += dragAmount
+                        }
+                    )
+                },
             contentAlignment = Alignment.BottomCenter
+        ) {
+            FilterBottomSheet(
+                state = state,
+                onEvent = { vm.onEvent(it) }
+            )
+        }
+    }
+}
+
+@Composable
+fun SearchField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    onSearch: () -> Unit,
+    enabled: Boolean
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp)
+            .shadow(4.dp, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            enabled = enabled,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = Color.Gray,
+                    fontFamily = interRegular,
+                    fontSize = 14.sp
+                )
+            },
+            colors = TextFieldDefaults.colors(
+                unfocusedTextColor = Color.Black,
+                focusedTextColor = Color.Black,
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = colorResource(R.color.Orange)
+            ),
+            textStyle = TextStyle(
+                fontFamily = interRegular,
+                fontSize = 15.sp
+            ),
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            trailingIcon = {
+                IconButton(
+                    onClick = onSearch,
+                    enabled = enabled
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.search_icon),
+                        contentDescription = "Поиск",
+                        tint = colorResource(R.color.Orange)
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun SearchResultCard(
+    application: Application,
+    onClick: () -> Unit,
+    enabled: Boolean
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(2.dp, RoundedCornerShape(12.dp))
+            .clickable(enabled = enabled) { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .background(
+                                color = colorResource(R.color.Orange).copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.company_icon),
+                            contentDescription = null,
+                            tint = colorResource(R.color.Orange),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = application.company_name,
+                        color = Color.Black,
+                        fontFamily = interBold,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = when (application.status.lowercase()) {
+                                "принята" -> Color(0xFFFFA726)
+                                "выполнена" -> Color(0xFF66BB6A)
+                                "не принята" -> Color(0xFFEF5350)
+                                else -> colorResource(R.color.Orange)
+                            },
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = application.status,
+                        color = Color.White,
+                        fontFamily = interBold,
+                        fontSize = 11.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            InfoRowCompact(
+                icon = R.drawable.location_pin_icon,
+                text = application.address
+            )
+
+            InfoRowCompact(
+                icon = R.drawable.phone_icon,
+                text = application.phone
+            )
+
+            if (application.description.isNotEmpty()) {
+                InfoRowCompact(
+                    icon = R.drawable.description_icon,
+                    text = application.description,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoRowCompact(
+    icon: Int,
+    text: String,
+    maxLines: Int = 1
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 3.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = colorResource(R.color.Orange).copy(alpha = 0.6f),
+            modifier = Modifier
+                .size(14.dp)
+                .padding(top = 2.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            color = Color.Gray,
+            fontFamily = interRegular,
+            fontSize = 13.sp,
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+fun EmptySearchResult(searchPerformed: Boolean) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(32.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .size(80.dp)
                     .background(
-                        Color.White,
-                        shape = RoundedCornerShape(20.dp)
-                    )
+                        color = colorResource(R.color.Orange).copy(alpha = 0.1f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
+                Icon(
+                    painter = painterResource(R.drawable.search_icon),
+                    contentDescription = null,
+                    tint = colorResource(R.color.Orange).copy(alpha = 0.5f),
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = if (searchPerformed) "Ничего не найдено" else "Начните поиск",
+                color = Color.Black,
+                fontFamily = interBold,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (searchPerformed)
+                    "Попробуйте изменить параметры поиска"
+                else
+                    "Введите текст или используйте фильтры",
+                color = Color.Gray,
+                fontFamily = interRegular,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun FilterBottomSheet(
+    state: EmployeeSearchState,
+    onEvent: (EmployeeSearchEvent) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(8.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box(
                     modifier = Modifier
-                        .padding(top = 41.dp)
-                        .padding(horizontal = 25.dp)
-                        .padding(bottom = 50.dp)
+                        .width(40.dp)
+                        .height(4.dp)
+                        .background(
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(2.dp)
+                        )
+                )
+            }
+            Text(
+                text = "Фильтры",
+                color = Color.Black,
+                fontSize = 22.sp,
+                fontFamily = ptSansBold,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 30.dp)
+            )
+            FilterSection(
+                title = "Поиск по",
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = "Фильтр",
-                        color = Color.Black,
-                        fontSize = 20.sp,
-                        fontFamily = ptSansBold,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Text(
-                        text = "Поиск по",
-                        fontFamily = interRegular,
-                        fontSize = 15.sp,
-                        color = Color.Black,
-                        modifier = Modifier
-                            .padding(top = 23.dp)
-                    )
-                    LazyRow(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        item {
-                            Button(
-                                onClick = {
-                                    vm.onEvent(EmployeeSearchEvent.SelectedSearch(1))
-                                },
-                                modifier = Modifier
-                                    .background(
-                                        color = if (state.selectSearch == 1) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectSearch == 1) Color.White else Color.Black,
-                                    containerColor = if (state.selectSearch == 1) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Названию организации",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    vm.onEvent(EmployeeSearchEvent.SelectedSearch(2))
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectSearch == 2) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectSearch == 2) Color.White else Color.Black,
-                                    containerColor = if (state.selectSearch == 2) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Адресу",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    vm.onEvent(EmployeeSearchEvent.SelectedSearch(3))
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectSearch == 3) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectSearch == 3) Color.White else Color.Black,
-                                    containerColor = if (state.selectSearch == 3) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Телефону",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    vm.onEvent(EmployeeSearchEvent.SelectedSearch(4))
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectSearch == 4) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectSearch == 4) Color.White else Color.Black,
-                                    containerColor = if (state.selectSearch == 4) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Описанию проблемы",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                        }
+                    item {
+                        FilterChip(
+                            text = "Названию",
+                            isSelected = state.selectSearch == 1,
+                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(1)) }
+                        )
                     }
-                    Text(
-                        text = "Статус заявки",
-                        fontFamily = interRegular,
-                        fontSize = 15.sp,
-                        color = Color.Black,
-                        modifier = Modifier
-                            .padding(top = 18.dp)
-                    )
-                    LazyRow(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        item {
-                            Button(
-                                onClick = {
-                                    if(state.selectStatus != 1){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(1))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .background(
-                                        color = if (state.selectStatus == 1) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectStatus == 1) Color.White else Color.Black,
-                                    containerColor = if (state.selectStatus == 1) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Не принята",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    if(state.selectStatus != 2){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(2))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectStatus == 2) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectStatus == 2) Color.White else Color.Black,
-                                    containerColor = if (state.selectStatus == 2) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Принята",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    if(state.selectStatus != 3){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(3))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedStatus(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectStatus == 3) colorResource(R.color.Orange) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectStatus == 3) Color.White else Color.Black,
-                                    containerColor = if (state.selectStatus == 3) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Выполнена",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                        }
+                    item {
+                        FilterChip(
+                            text = "Адресу",
+                            isSelected = state.selectSearch == 2,
+                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(2)) }
+                        )
                     }
-                    Text(
-                        text = "Комментарии",
-                        fontFamily = interRegular,
-                        fontSize = 15.sp,
-                        color = Color.Black,
-                        modifier = Modifier
-                            .padding(top = 23.dp)
-                    )
-                    LazyRow(
-                        modifier = Modifier
-                            .padding(top = 10.dp)
-                            .fillMaxWidth()
-                    ) {
-                        item {
-                            Button(
-                                onClick = {
-                                    if(state.selectComments != 1){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(1))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .background(
-                                        color = if (state.selectComments == 1) colorResource(
-                                            R.color.Orange
-                                        ) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectComments == 1) Color.White else Color.Black,
-                                    containerColor = if (state.selectComments == 1) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Нет",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    if(state.selectComments != 2){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(2))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectComments == 2) colorResource(
-                                            R.color.Orange
-                                        ) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectComments == 2) Color.White else Color.Black,
-                                    containerColor = if (state.selectComments == 2) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Один",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    if(state.selectComments != 3){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(3))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectComments == 3) colorResource(
-                                            R.color.Orange
-                                        ) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectComments == 3) Color.White else Color.Black,
-                                    containerColor = if (state.selectComments == 3) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Два",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                            Button(
-                                onClick = {
-                                    if(state.selectComments != 4){
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(4))
-                                    } else{
-                                        vm.onEvent(EmployeeSearchEvent.SelectedComments(0))
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .background(
-                                        color = if (state.selectComments == 4) colorResource(
-                                            R.color.Orange
-                                        ) else colorResource(
-                                            R.color.FillTextField
-                                        ),
-                                        shape = RoundedCornerShape(15.dp)
-                                    )
-                                    .border(
-                                        width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                        color = colorResource(R.color.Orange)
-                                    ),
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = if (state.selectComments == 4) Color.White else Color.Black,
-                                    containerColor = if (state.selectComments == 4) colorResource(
-                                        R.color.Orange
-                                    ) else colorResource(R.color.FillTextField)
-                                )
-                            ) {
-                                Text(
-                                    text = "Больше двух",
-                                    color = Color.Unspecified,
-                                    fontFamily = interBold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                        }
+                    item {
+                        FilterChip(
+                            text = "Телефону",
+                            isSelected = state.selectSearch == 3,
+                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(3)) }
+                        )
                     }
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 30.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = {
-                                vm.onEvent(EmployeeSearchEvent.ApplyFilters)
-                                if (state.searchText.isNotEmpty()) {
-                                    vm.onEvent(EmployeeSearchEvent.Search)
-                                }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(
-                                    color = colorResource(R.color.Orange),
-                                    shape = RoundedCornerShape(15.dp)
-                                ),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                containerColor = colorResource(R.color.Orange)
-                            )
-                        ) {
-                            Text(
-                                text = "Применить",
-                                color = Color.White,
-                                fontFamily = interBold,
-                                fontSize = 16.sp
-                            )
-                        }
-                        Button(
-                            onClick = {
-                                vm.onEvent(EmployeeSearchEvent.ShowFilter)
-                            },
-                            modifier = Modifier
-                                .padding(start = 5.dp)
-                                .weight(1f)
-                                .background(
-                                    color = colorResource(R.color.FillTextField),
-                                    shape = RoundedCornerShape(15.dp)
-                                )
-                                .border(
-                                    width = 2.dp, shape = RoundedCornerShape(15.dp),
-                                    color = colorResource(R.color.Orange)
-                                ),
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.Black,
-                                containerColor = colorResource(R.color.FillTextField)
-                            )
-                        ) {
-                            Text(
-                                text = "Отмена",
-                                color = Color.Black,
-                                fontFamily = interBold,
-                                fontSize = 16.sp
-                            )
-                        }
+                    item {
+                        FilterChip(
+                            text = "Описанию",
+                            isSelected = state.selectSearch == 4,
+                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(4)) }
+                        )
                     }
                 }
             }
+
+            FilterSection(
+                title = "Статус заявки",
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        FilterChip(
+                            text = "Не принята",
+                            color = Color(0xFFEF5350),
+                            isSelected = state.selectStatus == 1,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedStatus(
+                                        if (state.selectStatus != 1) 1 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            text = "Принята",
+                            color = Color(0xFFFFA726),
+                            isSelected = state.selectStatus == 2,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedStatus(
+                                        if (state.selectStatus != 2) 2 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            text = "Выполнена",
+                            color = Color(0xFF66BB6A),
+                            isSelected = state.selectStatus == 3,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedStatus(
+                                        if (state.selectStatus != 3) 3 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            FilterSection(
+                title = "Количество комментариев",
+                modifier = Modifier.padding(bottom = 24.dp)
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item {
+                        FilterChip(
+                            text = "Нет",
+                            isSelected = state.selectComments == 1,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedComments(
+                                        if (state.selectComments != 1) 1 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            text = "Один",
+                            isSelected = state.selectComments == 2,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedComments(
+                                        if (state.selectComments != 2) 2 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            text = "Два",
+                            isSelected = state.selectComments == 3,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedComments(
+                                        if (state.selectComments != 3) 3 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            text = "Больше двух",
+                            isSelected = state.selectComments == 4,
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedComments(
+                                        if (state.selectComments != 4) 4 else 0
+                                    )
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = {
+                        onEvent(EmployeeSearchEvent.ShowFilter)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Gray
+                    ),
+                    border = ButtonDefaults.outlinedButtonBorder.copy(
+                        brush = androidx.compose.ui.graphics.SolidColor(Color.LightGray),
+                        width = 1.dp
+                    )
+                ) {
+                    Text(
+                        text = "Отменить",
+                        color = Color.Gray,
+                        fontFamily = interBold,
+                        fontSize = 15.sp
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        onEvent(EmployeeSearchEvent.ApplyFilters)
+                        onEvent(EmployeeSearchEvent.Search)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.Orange)
+                    )
+                ) {
+                    Text(
+                        text = "Применить",
+                        color = Color.White,
+                        fontFamily = interBold,
+                        fontSize = 15.sp
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+@Composable
+fun FilterSection(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = title,
+            color = Color.Black,
+            fontFamily = interBold,
+            fontSize = 15.sp,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
+        content()
+    }
+}
+
+@Composable
+fun FilterChip(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    color: Color = colorResource(R.color.Orange)
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.height(36.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) color else Color.White,
+            contentColor = if (isSelected) Color.White else Color.Gray
+        ),
+        border = if (!isSelected) {
+            ButtonDefaults.outlinedButtonBorder.copy(
+                brush = androidx.compose.ui.graphics.SolidColor(Color.LightGray),
+                width = 1.dp
+            )
+        } else null
+    ) {
+        Text(
+            text = text,
+            fontFamily = interRegular,
+            fontSize = 13.sp
+        )
     }
 }

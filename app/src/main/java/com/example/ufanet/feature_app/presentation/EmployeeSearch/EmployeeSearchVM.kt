@@ -86,23 +86,27 @@ class EmployeeSearchVM(
                     },
                     showFilter = false
                 )
+                search()
             }
             is EmployeeSearchEvent.Search -> {
-                if(state.value.searchText.isNotEmpty()) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        try {
-                            _state.value = state.value.copy(
-                                applicationsList = getFilterApplicationUseCase(
-                                    state.value.searchText,
-                                    state.value.filterSearch,
-                                    state.value.filterStatus,
-                                    state.value.filterComments
-                                )
-                            )
-                        } catch (ex: Exception) {
-                            Log.e("supabase", ex.message.toString())
-                        }
-                    }
+                search()
+            }
+        }
+    }
+    private fun search(){
+        if(state.value.searchText.isNotEmpty()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    _state.value = state.value.copy(
+                        applicationsList = getFilterApplicationUseCase(
+                            state.value.searchText,
+                            state.value.filterSearch,
+                            state.value.filterStatus,
+                            state.value.filterComments
+                        )
+                    )
+                } catch (ex: Exception) {
+                    Log.e("supabase", ex.message.toString())
                 }
             }
         }

@@ -1,8 +1,11 @@
 package com.example.ufanet.feature_app.presentation.Applications
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,9 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,9 +47,8 @@ import com.example.ufanet.R
 import com.example.ufanet.common.BottomNavigation
 import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
+import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
-import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationUseCase
-import com.example.ufanet.feature_app.presentation.SignIn.SignInEvent
 import org.koin.androidx.compose.koinViewModel
 
 @Preview
@@ -57,6 +64,7 @@ fun ApplicationsScreen(
     vm: ApplicationsVM = koinViewModel()
 ) {
     val state = vm.state.value
+
     LaunchedEffect(key1 = !state.isComplete) {
         if (state.isComplete) {
             navController.navigate(NavRoutes.HomeScreen.route)
@@ -65,187 +73,313 @@ fun ApplicationsScreen(
             vm.onEvent(ApplicationsEvent.GetApplicationForUpdate(itemId))
         }
     }
+
     if (state.error.isNotEmpty()) {
         ErrorAlertDialog(ex = state.error) {
             vm.onEvent(ApplicationsEvent.ExceptionClear)
         }
     }
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color(0xFFF5F7FA)
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color.White)
         ) {
-            Text(
-                text =
-                    if (state.id > 0) {
-                        "Изменение заявки"
-                    } else{
-                        "Создание заявки"
-                    }
-                ,
+            Box(
                 modifier = Modifier
-                    .padding(top = 15.dp)
-                    .align(Alignment.CenterHorizontally),
-                color = Color.Black,
-                fontFamily = ptSansBold,
-                fontSize = 25.sp
-            )
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .background(
+                        color = colorResource(R.color.Orange),
+                        shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                    )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color.White.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.back_icon),
+                            contentDescription = "Назад",
+                            tint = Color.Unspecified
+                        )
+                    }
+
+                    Text(
+                        text = if (state.id > 0) "Изменение заявки" else "Создание заявки",
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontFamily = ptSansBold,
+                        modifier = Modifier.weight(1f),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.size(40.dp))
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier
-                    .padding(top = 10.dp)
-                    .padding(horizontal = 36.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 20.dp)
             ) {
                 item {
-                    Text(
-                        text = "Название организации:",
-                        color = Color.Black,
-                        fontSize = 15.sp,
-                        fontFamily = ptSansBold
-                    )
-                    TextField(
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp)
+                            .shadow(2.dp, RoundedCornerShape(12.dp)),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .background(
+                                        color = colorResource(R.color.Orange).copy(alpha = 0.1f),
+                                        shape = RoundedCornerShape(10.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.application_icon),
+                                    contentDescription = null,
+                                    tint = colorResource(R.color.Orange),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = if (state.id > 0)
+                                    "Редактирование заявки №${state.id}"
+                                else
+                                    "Заполните данные для новой заявки",
+                                color = Color.Gray,
+                                fontFamily = interRegular,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    FormField(
+                        label = "Название организации",
                         value = state.companyName,
-                        onValueChange = {
-                            vm.onEvent(ApplicationsEvent.EnteredCompanyName(it))
-                        },
-                        modifier = Modifier
-                            .padding(top = 7.dp)
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedTextColor = Color.Black,
-                            focusedTextColor = Color.Black,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = colorResource(R.color.Orange),
-                            unfocusedIndicatorColor = colorResource(R.color.Orange)
-                        )
+                        onValueChange = { vm.onEvent(ApplicationsEvent.EnteredCompanyName(it)) },
+                        placeholder = "Введите название организации",
+                        icon = R.drawable.company_icon,
+                        maxLines = 3
                     )
-                    Text(
-                        text = "Адрес:",
-                        color = Color.Black,
-                        fontSize = 15.sp,
-                        fontFamily = ptSansBold,
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                    )
-                    TextField(
+                }
+
+                item {
+                    FormField(
+                        label = "Адрес",
                         value = state.address,
-                        onValueChange = {
-                            vm.onEvent(ApplicationsEvent.EnteredAddress(it))
-                        },
-                        modifier = Modifier
-                            .padding(top = 7.dp)
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedTextColor = Color.Black,
-                            focusedTextColor = Color.Black,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = colorResource(R.color.Orange),
-                            unfocusedIndicatorColor = colorResource(R.color.Orange)
-                        )
+                        onValueChange = { vm.onEvent(ApplicationsEvent.EnteredAddress(it)) },
+                        placeholder = "Введите адрес",
+                        icon = R.drawable.location_pin_icon,
+                        maxLines = 3
                     )
-                    Text(
-                        text = "Телефон:",
-                        color = Color.Black,
-                        fontSize = 15.sp,
-                        fontFamily = ptSansBold,
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                    )
-                    TextField(
+                }
+
+                item {
+                    FormField(
+                        label = "Телефон",
                         value = state.phone,
-                        onValueChange = {
-                            vm.onEvent(ApplicationsEvent.EnteredPhone(it))
-                        },
-                        modifier = Modifier
-                            .padding(top = 7.dp)
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedTextColor = Color.Black,
-                            focusedTextColor = Color.Black,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = colorResource(R.color.Orange),
-                            unfocusedIndicatorColor = colorResource(R.color.Orange)
-                        ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                        onValueChange = { vm.onEvent(ApplicationsEvent.EnteredPhone(it)) },
+                        placeholder = "Введите номер телефона",
+                        icon = R.drawable.phone_icon,
+                        keyboardType = KeyboardType.Phone,
+                        maxLines = 1
                     )
-                    Text(
-                        text = "Причина заявки:",
-                        color = Color.Black,
-                        fontSize = 15.sp,
-                        fontFamily = ptSansBold,
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                    )
-                    TextField(
+                }
+
+                item {
+                    FormField(
+                        label = "Причина заявки",
                         value = state.description,
-                        onValueChange = {
-                            vm.onEvent(ApplicationsEvent.EnteredDescription(it))
-                        },
-                        modifier = Modifier
-                            .padding(top = 7.dp)
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedTextColor = Color.Black,
-                            focusedTextColor = Color.Black,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = colorResource(R.color.Orange),
-                            unfocusedIndicatorColor = colorResource(R.color.Orange)
-                        ),
-                        textStyle = TextStyle(fontSize = 15.sp)
+                        onValueChange = { vm.onEvent(ApplicationsEvent.EnteredDescription(it)) },
+                        placeholder = "Опишите причину обращения",
+                        icon = R.drawable.description_icon,
+                        maxLines = 4
                     )
-                    Button(
-                        onClick = {
+                }
+
+                item {
+                    SaveButton(
+                        isLoading = state.isLoading,
+                        isEdit = state.id > 0,
+                        onSave = {
                             if (state.id > 0) {
                                 vm.onEvent(ApplicationsEvent.UpdateApplication)
                             } else {
                                 vm.onEvent(ApplicationsEvent.SaveApplication)
                             }
-                        },
-                        modifier = Modifier
-                            .padding(top = 50.dp)
-                            .height(60.dp)
-                            .fillMaxWidth()
-                            .background(
-                                colorResource(R.color.Orange),
-                                RoundedCornerShape(15.dp)
-                            ),
-                        shape = RoundedCornerShape(15.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = Color.White,
-                            containerColor = Color.Transparent
-                        )
-                    ) {
-                        Text(
-                            text = "Сохранить",
-                            color = Color.White,
-                            fontFamily = interBold,
-                            fontSize = 18.sp
-                        )
-                    }
-                }
-                item {
-                    Spacer(
-                        modifier = Modifier
-                            .height(100.dp)
+                        }
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
         }
+
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
             BottomNavigation(navController, 1)
+        }
+    }
+}
+
+@Composable
+fun FormField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    icon: Int,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    maxLines: Int = 1
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = colorResource(R.color.Orange),
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = label,
+                color = Color.Black,
+                fontFamily = interBold,
+                fontSize = 15.sp
+            )
+        }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(2.dp, RoundedCornerShape(12.dp)),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            TextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(if (maxLines > 1) (maxLines * 24 + 40).dp else 56.dp),
+                placeholder = {
+                    Text(
+                        text = placeholder,
+                        color = Color.Gray,
+                        fontFamily = interRegular,
+                        fontSize = 14.sp
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    unfocusedTextColor = Color.Black,
+                    focusedTextColor = Color.Black,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = colorResource(R.color.Orange)
+                ),
+                textStyle = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = interRegular
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                maxLines = maxLines,
+                shape = RoundedCornerShape(12.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun SaveButton(
+    isLoading: Boolean,
+    isEdit: Boolean,
+    onSave: () -> Unit
+) {
+    Button(
+        onClick = onSave,
+        enabled = !isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .padding(top = 16.dp),
+        contentPadding = PaddingValues(0.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(R.color.Orange),
+            disabledContainerColor = Color.LightGray
+        )
+    ) {
+        if (!isLoading) {
+            Icon(
+                painter = painterResource(
+                    if (isEdit) R.drawable.save_icon else R.drawable.add_icon
+                ),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (isEdit) "Сохранить изменения" else "Создать заявку",
+                color = Color.White,
+                fontFamily = interBold,
+                fontSize = 16.sp
+            )
+        } else {
+            CircularProgressIndicator(
+                color = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }

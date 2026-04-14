@@ -7,5 +7,6 @@ data class ApplicationsState(
     val phone: String = "",
     val description: String = "",
     val isComplete: Boolean = false,
-    val error: String = ""
+    val error: String = "",
+    val isLoading: Boolean = false
 )
