@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ufanet.NavRoutes
@@ -44,7 +45,6 @@ import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
 import com.example.ufanet.feature_app.domain.models.Application
-import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
@@ -53,7 +53,7 @@ fun PrevHome() {
 }
 
 @Composable
-fun HomeScreen(navController: NavController, vm: HomeVM = koinViewModel()) {
+fun HomeScreen(navController: NavController, vm: HomeVM = hiltViewModel()) {
     val state = vm.state.value
     vm.onEvent(HomeEvent.GetApplications)
 

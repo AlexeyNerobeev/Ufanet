@@ -10,10 +10,13 @@ import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationCommentsCountUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationStatusUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CommentsVM(
+@HiltViewModel
+class CommentsVM @Inject constructor(
     private val getApplicationStatusUseCase: GetApplicationStatusUseCase,
     private val getCommentsForApplicationUseCase: GetCommentsForApplicationUseCase,
     private val addCommentUseCase: AddCommentUseCase,

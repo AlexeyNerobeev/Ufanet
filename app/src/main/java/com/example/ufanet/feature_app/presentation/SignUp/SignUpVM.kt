@@ -11,11 +11,14 @@ import com.example.ufanet.feature_app.domain.usecase.SignUpUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.ValidateCredentialsUseCase
 import com.example.ufanet.feature_app.presentation.Applications.ApplicationsEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignUpVM(
+@HiltViewModel
+class SignUpVM @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val addProfileUseCase: AddProfileUseCase,
     private val validateCredentialsUseCase: ValidateCredentialsUseCase

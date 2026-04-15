@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
@@ -44,10 +45,9 @@ import com.example.ufanet.common.CongratsAlertDialog
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileScreen(navController: NavController, vm: ProfileVM = koinViewModel()) {
+fun ProfileScreen(navController: NavController, vm: ProfileVM = hiltViewModel()) {
     val state = vm.state.value
 
     LaunchedEffect(key1 = null, key2 = !state.signOut) {

@@ -51,6 +51,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
@@ -59,10 +60,9 @@ import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
 import com.example.ufanet.feature_app.domain.models.Application
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EmployeeSearchScreen(navController: NavController, vm: EmployeeSearchVM = koinViewModel()) {
+fun EmployeeSearchScreen(navController: NavController, vm: EmployeeSearchVM = hiltViewModel()) {
     val state = vm.state.value
 
     Scaffold(

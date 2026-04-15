@@ -2,7 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.2.20"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -56,9 +58,23 @@ dependencies {
     implementation("io.coil-kt:coil-compose:1.3.1")
 
     //koin
-    implementation(libs.io.koin.compose)
-    implementation(libs.io.koin.core)
-    implementation(libs.io.koin.android)
+//    implementation(libs.io.koin.compose)
+//    implementation(libs.io.koin.core)
+//    implementation(libs.io.koin.android)
+
+    //карта
+    implementation(libs.maps.mobile)
+
+    //lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.ui.geometry)
+
+    //hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.navigation.testing)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation)
 
     //ktor
     implementation("io.ktor:ktor-client-core:3.2.3")
@@ -71,7 +87,7 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:realtime-kt")
 
     //navigation
-    implementation ("androidx.navigation:navigation-compose:2.9.4")
+    implementation (libs.androidx.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,6 +1,6 @@
 [versions]
-agp = "8.13.0"
-kotlin = "2.0.0"
+agp = "8.13.2"
+kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -11,6 +11,16 @@ composeBom = "2024.09.00"
 koin = "4.1.0"
 ui = "1.10.0"
 animation = "1.10.0"
+
+lifecycleRuntimeCompose = "2.10.0"
+hilt = "2.51.1"
+hiltNavigation = "1.2.0"
+ksp = "2.0.21-1.0.26"
+uiGeometry = "1.10.1"
+navigationTesting = "2.9.6"
+lifecycleViewmodelCompose = "2.10.0"
+navigationCompose = "2.9.6"
+mapsMobile = "4.26.0-lite"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,15 +38,33 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 
-##koin
-io-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-io-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
-io-koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+
+#карта
+maps-mobile = { module = "com.yandex.android:maps.mobile", version.ref = "mapsMobile" }
+
+# Hilt
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+androidx-compose-ui-geometry = { group = "androidx.compose.ui", name = "ui-geometry", version.ref = "uiGeometry" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTesting" }
+
+
+##koin
+#io-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+#io-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+#io-koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 

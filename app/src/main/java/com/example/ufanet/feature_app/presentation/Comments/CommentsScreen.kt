@@ -1,8 +1,6 @@
 package com.example.ufanet.feature_app.presentation.Comments
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,14 +33,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
@@ -51,10 +48,9 @@ import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = koinViewModel()) {
+fun CommentsScreen(itemId: Int, navController: NavController, vm: CommentsVM = hiltViewModel()) {
     val state = vm.state.value
 
     LaunchedEffect(key1 = !state.isComplete) {
@@ -683,7 +679,8 @@ fun EmptySelectionView(navController: NavController) {
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(R.color.Orange)
-                    )
+                    ),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
                         text = "На главную",
@@ -705,7 +702,8 @@ fun EmptySelectionView(navController: NavController) {
                     border = ButtonDefaults.outlinedButtonBorder.copy(
                         brush = androidx.compose.ui.graphics.SolidColor(colorResource(R.color.Orange)),
                         width = 1.dp
-                    )
+                    ),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
                         text = "Поиск",

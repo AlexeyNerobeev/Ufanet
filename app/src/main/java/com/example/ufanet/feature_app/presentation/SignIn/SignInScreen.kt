@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ufanet.NavRoutes
@@ -39,7 +40,6 @@ import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
-import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
@@ -48,7 +48,7 @@ fun SignInPrev(){
 }
 
 @Composable
-fun SignInScreen(navController: NavController, vm: SignInVM = koinViewModel()) {
+fun SignInScreen(navController: NavController, vm: SignInVM = hiltViewModel()) {
     val state = vm.state.value
     LaunchedEffect(key1 = !state.isComplete) {
         if(state.isComplete){

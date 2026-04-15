@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignInUseCase
 import com.example.ufanet.feature_app.domain.usecase.ValidateCredentialsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignInVM(
+@HiltViewModel
+class SignInVM @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val getProfileStatusUseCase: GetProfileStatusUseCase,
     private val validateCredentialsUseCase: ValidateCredentialsUseCase

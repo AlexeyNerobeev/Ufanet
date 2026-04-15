@@ -16,11 +16,14 @@ import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeScre
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileScreen
 import com.example.ufanet.feature_app.presentation.EmployeeSearch.EmployeeSearchScreen
 import com.example.ufanet.feature_app.presentation.Home.HomeScreen
+import com.example.ufanet.feature_app.presentation.Map.MapScreen
 import com.example.ufanet.feature_app.presentation.Profile.ProfileScreen
 import com.example.ufanet.feature_app.presentation.SignIn.SignInScreen
 import com.example.ufanet.feature_app.presentation.SignUp.SignUpScreen
 import com.example.ufanet.feature_app.presentation.Splash.SplashScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +57,7 @@ class MainActivity : ComponentActivity() {
                     CommentsScreen(itemId = itemId, navController = navController)
                 }
                 composable(NavRoutes.SplashScreen.route) { SplashScreen(navController) }
+                composable(NavRoutes.MapScreen.route) { MapScreen(navController) }
             }
         }
     }

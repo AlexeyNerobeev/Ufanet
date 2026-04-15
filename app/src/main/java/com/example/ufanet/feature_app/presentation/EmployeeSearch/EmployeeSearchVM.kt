@@ -6,10 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EmployeeSearchVM(
+@HiltViewModel
+class EmployeeSearchVM @Inject constructor(
     private val getFilterApplicationUseCase: GetFilterApplicationUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(EmployeeSearchState())
@@ -64,7 +67,7 @@ class EmployeeSearchVM(
                     },
                     filterSearch = when (state.value.selectSearch) {
                         1 -> "company_name"
-                        2 -> "adress"
+                        2 -> "address"
                         3 -> "phone"
                         4 -> "description"
                         else -> ""
@@ -99,12 +102,13 @@ class EmployeeSearchVM(
                 try {
                     _state.value = state.value.copy(
                         applicationsList = getFilterApplicationUseCase(
-                            state.value.searchText,
-                            state.value.filterSearch,
-                            state.value.filterStatus,
-                            state.value.filterComments
+                            searchText = state.value.searchText,
+                            column = state.value.filterSearch,
+                            status =  state.value.filterStatus,
+                            commentsCount =  state.value.filterComments
                         )
                     )
+                    Log.i("filter", state.value.filterStatus)
                 } catch (ex: Exception) {
                     Log.e("supabase", ex.message.toString())
                 }

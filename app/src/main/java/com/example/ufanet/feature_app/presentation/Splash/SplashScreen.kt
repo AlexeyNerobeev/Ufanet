@@ -2,25 +2,23 @@ package com.example.ufanet.feature_app.presentation.Splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SplashScreen(navController: NavController, vm: SplashScreenVM = koinViewModel()) {
+fun SplashScreen(navController: NavController, vm: SplashScreenVM = hiltViewModel()) {
     val state = vm.state.value
     LaunchedEffect(key1 = !state.goHome, key2 = !state.goSignIn) {
         vm.onEvent(SplashScreenEvent.GetCurrentUserId)

@@ -8,10 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.RemoveApplicationUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeVM(
+@HiltViewModel
+class HomeVM @Inject constructor(
     private val getApplicationsUseCase: GetApplicationsUseCase,
     private val removeApplicationUseCase: RemoveApplicationUseCase
 ): ViewModel() {

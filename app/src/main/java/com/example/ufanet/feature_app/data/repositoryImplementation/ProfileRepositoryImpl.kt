@@ -2,15 +2,19 @@ package com.example.ufanet.feature_app.data.repositoryImplementation
 
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Profile
+import com.example.ufanet.feature_app.domain.models.User
 import com.example.ufanet.feature_app.domain.repository.ProfileRepository
+import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 
-class ProfileRepositoryImpl: ProfileRepository {
+class ProfileRepositoryImpl(
+    private val loadUserIdUseCase: LoadUserIdUseCase
+): ProfileRepository {
     override suspend fun addNewProfile(companyName: String, phone: String, email: String) {
-        val profile = Profile(company_name = companyName, phone = phone, email = email, status = "клиент", user_id = getUserId())
+        val profile = Profile(company_name = companyName, phone = phone, email = email, status = "клиент", user_id = loadUserIdUseCase.invoke())
         supabase.from("profile").insert(profile)
     }
 
@@ -26,15 +30,10 @@ class ProfileRepositoryImpl: ProfileRepository {
         ){
             filter {
                 and {
-                    eq("user_id", getUserId())
+                    eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
         }.decodeSingle<Profile>()
-    }
-
-    private suspend fun getUserId(): String {
-        supabase.auth.awaitInitialization()
-        return supabase.auth.currentUserOrNull()?.id ?: ""
     }
 
     override suspend fun updateProfile(companyName: String, phone: String) {
@@ -42,7 +41,7 @@ class ProfileRepositoryImpl: ProfileRepository {
         supabase.from("profile").update(profile) {
             filter {
                 and {
-                    eq("user_id", getUserId())
+                    eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
         }
@@ -60,5 +59,10 @@ class ProfileRepositoryImpl: ProfileRepository {
                 }
             }
         }.decodeSingle<Profile>()
+    }
+
+    suspend fun getUserId(): String {
+        supabase.auth.awaitInitialization()
+        return supabase.auth.currentSessionOrNull()?.user?.id ?: ""
     }
 }

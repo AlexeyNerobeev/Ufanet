@@ -6,10 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetAllApplicationsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EmployeeHomeVM(
+@HiltViewModel
+class EmployeeHomeVM @Inject constructor(
     private val getAllApplicationsUseCase: GetAllApplicationsUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(EmployeeHomeState())

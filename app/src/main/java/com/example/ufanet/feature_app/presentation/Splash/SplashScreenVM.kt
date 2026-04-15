@@ -7,13 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetCurrentUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
+import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
+import com.example.ufanet.feature_app.domain.usecase.LoadUserStatusUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SplashScreenVM(
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
-    private val getProfileStatusUseCase: GetProfileStatusUseCase
+@HiltViewModel
+class SplashScreenVM @Inject constructor(
+    private val loadUserIdUseCase: LoadUserIdUseCase,
+    private val loadUserStatusUseCase: LoadUserStatusUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(SplashScreenState())
     val state: State<SplashScreenState> = _state
@@ -23,12 +28,11 @@ class SplashScreenVM(
             is SplashScreenEvent.GetCurrentUserId -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
-                        _state.value = state.value.copy(
-                            currentUserId = getCurrentUserIdUseCase.invoke().id
-                        )
-                        if(state.value.currentUserId != null){
+                        val id = loadUserIdUseCase.invoke()
+                        val status = loadUserStatusUseCase.invoke()
+                        if(id.isNotEmpty() && status.isNotEmpty()){
                             _state.value = state.value.copy(
-                                status = getProfileStatusUseCase.invoke().status,
+                                status = status,
                                 goHome = true
                             )
                         } else{

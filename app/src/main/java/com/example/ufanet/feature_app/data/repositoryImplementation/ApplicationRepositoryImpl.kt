@@ -1,15 +1,19 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
+import android.util.Log
 import com.example.ufanet.App
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
+import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 
-class ApplicationRepositoryImpl : ApplicationRepository {
+class ApplicationRepositoryImpl(
+    private val loadUserIdUseCase: LoadUserIdUseCase
+) : ApplicationRepository {
     override suspend fun addApplication(
         companyName: String,
         address: String,
@@ -18,14 +22,9 @@ class ApplicationRepositoryImpl : ApplicationRepository {
     ) {
         val application = Application(
             company_name = companyName, address = address,
-            phone = phone, description = description, user_id = getUserId(), status = "Не принята"
+            phone = phone, description = description, user_id = loadUserIdUseCase.invoke(), status = "Не принята"
         )
         supabase.postgrest["applications"].insert(application)
-    }
-
-    private suspend fun getUserId(): String {
-        supabase.auth.awaitInitialization()
-        return supabase.auth.currentUserOrNull()?.id ?: ""
     }
 
     override suspend fun getApplications(): List<Application> {
@@ -41,7 +40,7 @@ class ApplicationRepositoryImpl : ApplicationRepository {
         ) {
             filter {
                 and {
-                    eq("user_id", getUserId())
+                    eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
         }.decodeList<Application>()
@@ -51,7 +50,7 @@ class ApplicationRepositoryImpl : ApplicationRepository {
         supabase.from("applications").delete {
             filter {
                 eq("id", id)
-                eq(column = "user_id", getUserId())
+                eq(column = "user_id", loadUserIdUseCase.invoke())
             }
         }
     }
@@ -69,7 +68,7 @@ class ApplicationRepositoryImpl : ApplicationRepository {
             filter{
                 and {
                     eq("id", id)
-                    eq("user_id", getUserId())
+                    eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
         }.decodeSingle<Application>()
@@ -90,7 +89,7 @@ class ApplicationRepositoryImpl : ApplicationRepository {
             filter{
                 and{
                     eq("id", id)
-                    eq("user_id", getUserId())
+                    eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
         }

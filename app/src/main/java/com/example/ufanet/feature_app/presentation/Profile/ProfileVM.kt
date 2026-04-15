@@ -9,10 +9,13 @@ import com.example.ufanet.feature_app.domain.models.Profile
 import com.example.ufanet.feature_app.domain.usecase.GetProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignOutUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateProfileUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileVM(
+@HiltViewModel
+class ProfileVM @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val signOutUseCase: SignOutUseCase

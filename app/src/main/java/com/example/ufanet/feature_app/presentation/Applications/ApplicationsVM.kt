@@ -5,15 +5,17 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ufanet.common.ErrorAlertDialog
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.usecase.AddApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ApplicationsVM(
+@HiltViewModel
+class ApplicationsVM @Inject constructor(
     private val addApplicationUseCase: AddApplicationUseCase,
     private val getApplicationForUpdateUseCase: GetApplicationForUpdateUseCase,
     private val updateApplicationUseCase: UpdateApplicationUseCase

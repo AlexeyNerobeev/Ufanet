@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.ufanet.NavRoutes
 import com.example.ufanet.R
@@ -44,10 +45,9 @@ import com.example.ufanet.common.interBold
 import com.example.ufanet.common.interRegular
 import com.example.ufanet.common.ptSansBold
 import com.example.ufanet.feature_app.domain.models.Application
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = koinViewModel()) {
+fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = hiltViewModel()) {
     val state = vm.state.value
     vm.onEvent(EmployeeHomeEvent.GetAllApplications)
 
@@ -155,6 +155,9 @@ fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = koinVi
                             application = item,
                             onClick = {
                                 navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
+                            },
+                            showOnMapClick = {
+                                navController.navigate(NavRoutes.MapScreen.route)
                             }
                         )
                     }
@@ -177,13 +180,13 @@ fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = koinVi
 @Composable
 fun EmployeeApplicationCard(
     application: Application,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    showOnMapClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(16.dp))
-            .clickable { onClick() },
+            .shadow(4.dp, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -240,7 +243,6 @@ fun EmployeeApplicationCard(
                                 "принята" -> Color(0xFFFFA726)
                                 "выполнена" -> Color(0xFF66BB6A)
                                 "не принята" -> Color(0xFFEF5350)
-                                "в обработке", "pending" -> Color(0xFF42A5F5)
                                 else -> colorResource(R.color.Orange)
                             },
                             shape = RoundedCornerShape(20.dp)
@@ -266,18 +268,23 @@ fun EmployeeApplicationCard(
 
             InfoRow(
                 label = "Адрес",
-                value = application.address
+                value = application.address,
+                onClick = {
+                    showOnMapClick()
+                }
             )
 
             InfoRow(
                 label = "Телефон",
-                value = application.phone
+                value = application.phone,
+                onClick = {}
             )
 
             InfoRow(
                 label = "Описание",
                 value = application.description,
-                maxLines = 2
+                maxLines = 2,
+                onClick = {}
             )
 
             Button(
@@ -314,12 +321,16 @@ fun EmployeeApplicationCard(
 fun InfoRow(
     label: String,
     value: String,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(vertical = 6.dp)
+            .clickable{
+                onClick()
+            },
         verticalAlignment = Alignment.Top
     ) {
         Box(
