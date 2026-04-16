@@ -34,30 +34,53 @@ class MainActivity : ComponentActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = NavRoutes.SplashScreen.route){
-                composable (NavRoutes.SignInScreen.route) { SignInScreen(navController) }
-                composable (NavRoutes.SignUpScreen.route) { SignUpScreen(navController)}
-                composable (NavRoutes.HomeScreen.route) { HomeScreen(navController)}
-                composable (route = NavRoutes.ApplicationsScreen.route,
+            NavHost(
+                navController = navController,
+                startDestination = NavRoutes.SplashScreen.route
+            ) {
+                composable(NavRoutes.SignInScreen.route) { SignInScreen(navController) }
+                composable(NavRoutes.SignUpScreen.route) { SignUpScreen(navController) }
+                composable(NavRoutes.HomeScreen.route) { HomeScreen(navController) }
+                composable(
+                    route = NavRoutes.ApplicationsScreen.route,
                     arguments = listOf(navArgument("itemId") {
                         type = NavType.IntType
-                    })) { backStackEntry ->
+                    })
+                ) { backStackEntry ->
                     val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
                     ApplicationsScreen(itemId = itemId, navController = navController)
                 }
                 composable(NavRoutes.ProfileScreen.route) { ProfileScreen(navController) }
                 composable(NavRoutes.EmployeeHomeScreen.route) { EmployeeHomeScreen(navController) }
-                composable(NavRoutes.EmployeeSearchScreen.route) { EmployeeSearchScreen(navController) }
-                composable(NavRoutes.EmployeeProfileScreen.route) { EmployeeProfileScreen(navController ) }
-                composable (route = NavRoutes.CommentsScreen.route,
+                composable(NavRoutes.EmployeeSearchScreen.route) {
+                    EmployeeSearchScreen(
+                        navController
+                    )
+                }
+                composable(NavRoutes.EmployeeProfileScreen.route) {
+                    EmployeeProfileScreen(
+                        navController
+                    )
+                }
+                composable(
+                    route = NavRoutes.CommentsScreen.route,
                     arguments = listOf(navArgument("itemId") {
                         type = NavType.IntType
-                    })) { backStackEntry ->
+                    })
+                ) { backStackEntry ->
                     val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
                     CommentsScreen(itemId = itemId, navController = navController)
                 }
                 composable(NavRoutes.SplashScreen.route) { SplashScreen(navController) }
-                composable(NavRoutes.MapScreen.route) { MapScreen(navController) }
+                composable(
+                    route = NavRoutes.MapScreen.route,
+                    arguments = listOf(navArgument("itemId") {
+                        type = NavType.IntType
+                    })
+                ) { backStackEntry ->
+                    val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
+                    MapScreen(navController, itemId)
+                }
             }
         }
     }

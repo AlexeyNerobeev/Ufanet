@@ -20,4 +20,5 @@ interface ApplicationRepository {
     suspend fun updateApplicationStatus(applicationId: Int, status: String)
     suspend fun updateCommentsCount(applicationId: Int, commentsCount: Int)
     suspend fun getFilterApplication(searchText: String, column: String, status: String, commentsCount: Int): List<Application>
+    suspend fun getApplicationMapInfo(applicationId: Int): Application
 }

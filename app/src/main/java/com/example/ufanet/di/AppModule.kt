@@ -17,6 +17,7 @@ import com.example.ufanet.feature_app.domain.usecase.AddProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.DeleteUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetAllApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetApplicationMapInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
@@ -196,5 +197,10 @@ class AppModule {
     @Provides
     fun provideLoadUserStatusUseCase(currentSessionRepository: CurrentSessionRepository): LoadUserStatusUseCase{
         return LoadUserStatusUseCase(currentSessionRepository)
+    }
+
+    @Provides
+    fun provideGetApplicationMapInfoUseCase(applicationRepository: ApplicationRepository): GetApplicationMapInfoUseCase{
+        return GetApplicationMapInfoUseCase(applicationRepository)
     }
 }

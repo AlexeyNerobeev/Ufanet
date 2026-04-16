@@ -21,8 +21,12 @@ class ApplicationRepositoryImpl(
         description: String
     ) {
         val application = Application(
-            company_name = companyName, address = address,
-            phone = phone, description = description, user_id = loadUserIdUseCase.invoke(), status = "Не принята"
+            company_name = companyName,
+            address = address,
+            phone = phone,
+            description = description,
+            user_id = loadUserIdUseCase.invoke(),
+            status = "Не принята"
         )
         supabase.postgrest["applications"].insert(application)
     }
@@ -64,8 +68,8 @@ class ApplicationRepositoryImpl(
                 "description",
                 "address"
             )
-        ){
-            filter{
+        ) {
+            filter {
                 and {
                     eq("id", id)
                     eq("user_id", loadUserIdUseCase.invoke())
@@ -81,13 +85,15 @@ class ApplicationRepositoryImpl(
         phone: String,
         description: String
     ) {
-        val application = Application(company_name = companyName,
+        val application = Application(
+            company_name = companyName,
             address = address,
             phone = phone,
-            description = description)
+            description = description
+        )
         supabase.from("applications").update(application) {
-            filter{
-                and{
+            filter {
+                and {
                     eq("id", id)
                     eq("user_id", loadUserIdUseCase.invoke())
                 }
@@ -114,7 +120,7 @@ class ApplicationRepositoryImpl(
             columns = Columns.list(
                 "status"
             )
-        ){
+        ) {
             filter {
                 and {
                     eq("id", applicationId)
@@ -125,8 +131,8 @@ class ApplicationRepositoryImpl(
 
     override suspend fun updateApplicationStatus(applicationId: Int, status: String) {
         val application = Application(status = status)
-        supabase.from("applications").update(application){
-            filter{
+        supabase.from("applications").update(application) {
+            filter {
                 and {
                     eq("id", applicationId)
                 }
@@ -136,7 +142,7 @@ class ApplicationRepositoryImpl(
 
     override suspend fun updateCommentsCount(applicationId: Int, commentsCount: Int) {
         val commentsCount = Application(comments_count = commentsCount)
-        supabase.from("applications").update(commentsCount){
+        supabase.from("applications").update(commentsCount) {
             filter {
                 and {
                     eq("id", applicationId)
@@ -161,7 +167,7 @@ class ApplicationRepositoryImpl(
                 "status",
                 "comments_count"
             )
-        ){
+        ) {
             filter {
                 and {
                     if (searchText.isNotEmpty()) {
@@ -180,5 +186,19 @@ class ApplicationRepositoryImpl(
                 }
             }
         }.decodeList<Application>()
+    }
+
+    override suspend fun getApplicationMapInfo(applicationId: Int): Application {
+        return supabase.postgrest["applications"].select(
+            columns = Columns.list(
+                "company_name",
+                "address",
+                "phone"
+            )
+        ) {
+            filter {
+                eq("id", applicationId)
+            }
+        }.decodeSingle<Application>()
     }
 }

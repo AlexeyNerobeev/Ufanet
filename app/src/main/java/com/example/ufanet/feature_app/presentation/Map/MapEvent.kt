@@ -4,4 +4,6 @@ import com.yandex.mapkit.geometry.Point
 
 sealed class MapEvent {
     data class OnUserLocationReceived(val point: Point) : MapEvent()
+    data class GetApplicationMapInfo(val value: Int): MapEvent()
+    data object BuildRoute: MapEvent()
 }

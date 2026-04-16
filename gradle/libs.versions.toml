@@ -20,7 +20,7 @@ uiGeometry = "1.10.1"
 navigationTesting = "2.9.6"
 lifecycleViewmodelCompose = "2.10.0"
 navigationCompose = "2.9.6"
-mapsMobile = "4.26.0-lite"
+mapsMobile = "4.33.1-full"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

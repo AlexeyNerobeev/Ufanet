@@ -157,7 +157,7 @@ fun EmployeeHomeScreen(navController: NavController, vm: EmployeeHomeVM = hiltVi
                                 navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
                             },
                             showOnMapClick = {
-                                navController.navigate(NavRoutes.MapScreen.route)
+                                navController.navigate(NavRoutes.MapScreen.createRoute(item.id))
                             }
                         )
                     }
