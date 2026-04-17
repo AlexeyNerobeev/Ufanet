@@ -1,5 +1,6 @@
 package com.example.ufanet.feature_app.presentation.Map
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.util.Log.e
 import androidx.compose.runtime.State
@@ -100,7 +101,7 @@ class MapVM @Inject constructor(
         }
     }
 
-    fun buildRoute() {
+    private fun buildRoute() {
         val user = state.value.userLocation
         val enterprise = state.value.enterprisePoint
 
@@ -121,12 +122,23 @@ class MapVM @Inject constructor(
             VehicleOptions(),
             object : DrivingSession.DrivingRouteListener {
 
+                @SuppressLint("DefaultLocale")
                 override fun onDrivingRoutes(routes: MutableList<DrivingRoute>) {
                     Log.d("RouteDebug", "routes=${routes.size}")
 
                     if (routes.isNotEmpty()) {
+                        val route = routes.first()
+
+                        val distanceMeters = route.metadata.weight.distance.value
+                        val timeSeconds = route.metadata.weight.time.value
+
+                        val distanceKm = distanceMeters / 1000.0
+                        val timeMinutes = timeSeconds / 60
+
                         _state.value = state.value.copy(
-                            route = routes.first().geometry,
+                            route = route.geometry,
+                            distanceText = String.format("%.1f км", distanceKm),
+                            timeText = formatTime(timeSeconds.toInt()),
                             isRouteLoading = false
                         )
                     }
@@ -138,5 +150,17 @@ class MapVM @Inject constructor(
                 }
             }
         )
+    }
+
+    private fun formatTime(seconds: Int): String {
+        val minutes = seconds / 60
+        val hours = minutes / 60
+
+        return if (hours > 0) {
+            val remainingMinutes = minutes % 60
+            "$hours ч $remainingMinutes мин"
+        } else {
+            "$minutes мин"
+        }
     }
 }

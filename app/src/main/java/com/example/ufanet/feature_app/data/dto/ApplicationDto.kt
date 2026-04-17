@@ -1,8 +1,9 @@
-package com.example.ufanet.feature_app.domain.models
+package com.example.ufanet.feature_app.data.dto
 
 import kotlinx.serialization.Serializable
 
-data class Application(
+@Serializable
+data class ApplicationDto(
     val id: Int = 0,
     val company_name: String = "",
     val phone: String = "",
@@ -11,4 +12,4 @@ data class Application(
     val address: String = "",
     val status: String = "",
     val comments_count: Int = 0
-    )
+)

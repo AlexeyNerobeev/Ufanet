@@ -71,6 +71,8 @@ fun ApplicationsScreen(
         }
         if (itemId > 0) {
             vm.onEvent(ApplicationsEvent.GetApplicationForUpdate(itemId))
+        } else{
+            vm.onEvent(ApplicationsEvent.GetCompanyInfo)
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.usecase.AddApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetCompanyInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.UpdateApplicationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ApplicationsVM @Inject constructor(
     private val addApplicationUseCase: AddApplicationUseCase,
     private val getApplicationForUpdateUseCase: GetApplicationForUpdateUseCase,
-    private val updateApplicationUseCase: UpdateApplicationUseCase
+    private val updateApplicationUseCase: UpdateApplicationUseCase,
+    private val getCompanyInfoUseCase: GetCompanyInfoUseCase
 ): ViewModel() {
     private val _state = mutableStateOf(ApplicationsState())
     val state: State<ApplicationsState> = _state
@@ -115,6 +117,19 @@ class ApplicationsVM @Inject constructor(
                         }
                     } catch (ex: Exception){
                         Log.e("supabase", ex.message.toString())
+                    }
+                }
+            }
+            ApplicationsEvent.GetCompanyInfo -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    try {
+                        val companyInfo = getCompanyInfoUseCase.invoke()
+                        _state.value = state.value.copy(
+                            companyName = companyInfo.company_name,
+                            phone = companyInfo.phone
+                        )
+                    } catch (e: Exception) {
+                        Log.e("getCompanyInfo", e.message.toString())
                     }
                 }
             }

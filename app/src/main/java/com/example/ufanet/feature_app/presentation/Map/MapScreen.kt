@@ -329,6 +329,28 @@ fun MapScreen(navController: NavController, applicationId: Int, vm: MapVM = hilt
                                     icon = R.drawable.phone_icon
                                 )
 
+                                if(state.timeText.isNotEmpty() && state.distanceText.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "🚗 ${state.timeText}",
+                                            fontSize = 16.sp,
+                                            fontFamily = interBold
+                                        )
+
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        Text(
+                                            text = state.distanceText,
+                                            fontSize = 16.sp,
+                                            fontFamily = interRegular
+                                        )
+                                    }
+                                }
+
                                 Spacer(modifier = Modifier.height(20.dp))
 
                                 Button(

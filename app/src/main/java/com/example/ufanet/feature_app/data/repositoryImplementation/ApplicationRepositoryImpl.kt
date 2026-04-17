@@ -2,6 +2,8 @@ package com.example.ufanet.feature_app.data.repositoryImplementation
 
 import android.util.Log
 import com.example.ufanet.App
+import com.example.ufanet.feature_app.data.dto.ApplicationDto
+import com.example.ufanet.feature_app.data.mappers.toModel
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
@@ -20,7 +22,7 @@ class ApplicationRepositoryImpl(
         phone: String,
         description: String
     ) {
-        val application = Application(
+        val application = ApplicationDto(
             company_name = companyName,
             address = address,
             phone = phone,
@@ -47,7 +49,7 @@ class ApplicationRepositoryImpl(
                     eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
-        }.decodeList<Application>()
+        }.decodeList<ApplicationDto>().map { it.toModel() }
     }
 
     override suspend fun removeApplication(id: Int) {
@@ -75,7 +77,7 @@ class ApplicationRepositoryImpl(
                     eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
-        }.decodeSingle<Application>()
+        }.decodeSingle<ApplicationDto>().toModel()
     }
 
     override suspend fun updateApplication(
@@ -85,7 +87,7 @@ class ApplicationRepositoryImpl(
         phone: String,
         description: String
     ) {
-        val application = Application(
+        val application = ApplicationDto(
             company_name = companyName,
             address = address,
             phone = phone,
@@ -112,7 +114,7 @@ class ApplicationRepositoryImpl(
                 "status",
                 "comments_count"
             )
-        ).decodeList<Application>()
+        ).decodeList<ApplicationDto>().map { it.toModel() }
     }
 
     override suspend fun getApplicationStatus(applicationId: Int): Application {
@@ -126,11 +128,11 @@ class ApplicationRepositoryImpl(
                     eq("id", applicationId)
                 }
             }
-        }.decodeSingle<Application>()
+        }.decodeSingle<ApplicationDto>().toModel()
     }
 
     override suspend fun updateApplicationStatus(applicationId: Int, status: String) {
-        val application = Application(status = status)
+        val application = ApplicationDto(status = status)
         supabase.from("applications").update(application) {
             filter {
                 and {
@@ -141,7 +143,7 @@ class ApplicationRepositoryImpl(
     }
 
     override suspend fun updateCommentsCount(applicationId: Int, commentsCount: Int) {
-        val commentsCount = Application(comments_count = commentsCount)
+        val commentsCount = ApplicationDto(comments_count = commentsCount)
         supabase.from("applications").update(commentsCount) {
             filter {
                 and {
@@ -185,7 +187,7 @@ class ApplicationRepositoryImpl(
                     }
                 }
             }
-        }.decodeList<Application>()
+        }.decodeList<ApplicationDto>().map { it.toModel() }
     }
 
     override suspend fun getApplicationMapInfo(applicationId: Int): Application {
@@ -199,6 +201,6 @@ class ApplicationRepositoryImpl(
             filter {
                 eq("id", applicationId)
             }
-        }.decodeSingle<Application>()
+        }.decodeSingle<ApplicationDto>().toModel()
     }
 }

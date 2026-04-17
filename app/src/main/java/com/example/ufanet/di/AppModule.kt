@@ -21,6 +21,7 @@ import com.example.ufanet.feature_app.domain.usecase.GetApplicationMapInfoUseCas
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetCompanyInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCurrentUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
@@ -202,5 +203,10 @@ class AppModule {
     @Provides
     fun provideGetApplicationMapInfoUseCase(applicationRepository: ApplicationRepository): GetApplicationMapInfoUseCase{
         return GetApplicationMapInfoUseCase(applicationRepository)
+    }
+
+    @Provides
+    fun providesGetCompanyInfoUseCase(profileRepository: ProfileRepository): GetCompanyInfoUseCase{
+        return GetCompanyInfoUseCase(profileRepository)
     }
 }

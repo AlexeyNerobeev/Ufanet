@@ -1,5 +1,7 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
+import com.example.ufanet.feature_app.data.dto.CommentDto
+import com.example.ufanet.feature_app.data.mappers.toModel
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Comment
 import com.example.ufanet.feature_app.domain.repository.CommentRepository
@@ -12,7 +14,11 @@ class CommentRepositoryImpl(
     private val loadUserIdUseCase: LoadUserIdUseCase
 ): CommentRepository {
     override suspend fun addComment(commentText: String, applicationId: Int) {
-        val comment = Comment(comment_text = commentText, author_id = loadUserIdUseCase.invoke(), application_id = applicationId)
+        val comment = CommentDto(
+            comment_text = commentText,
+            author_id = loadUserIdUseCase.invoke(),
+            application_id = applicationId
+        )
         supabase.postgrest["comments"].insert(comment)
     }
 
@@ -27,6 +33,6 @@ class CommentRepositoryImpl(
                     eq("application_id", applicationId)
                 }
             }
-        }.decodeList<Comment>()
+        }.decodeList<CommentDto>().map { it.toModel() }
     }
 }

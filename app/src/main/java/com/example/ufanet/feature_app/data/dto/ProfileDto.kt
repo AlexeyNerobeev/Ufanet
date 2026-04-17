@@ -1,9 +1,9 @@
-package com.example.ufanet.feature_app.domain.models
+package com.example.ufanet.feature_app.data.dto
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 
-data class Profile(
+@Serializable
+data class ProfileDto(
     val id: Int = 0,
     val company_name: String = "",
     val phone: String = "",

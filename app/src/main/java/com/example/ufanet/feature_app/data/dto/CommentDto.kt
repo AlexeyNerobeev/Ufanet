@@ -1,8 +1,9 @@
-package com.example.ufanet.feature_app.domain.models
+package com.example.ufanet.feature_app.data.dto
 
 import kotlinx.serialization.Serializable
 
-data class Comment (
+@Serializable
+data class CommentDto(
     val id: Int = 0,
     val application_id: Int = 0,
     val author_id: String = "",

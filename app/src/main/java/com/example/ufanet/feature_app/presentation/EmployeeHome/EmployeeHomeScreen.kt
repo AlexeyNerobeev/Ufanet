@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -271,20 +272,23 @@ fun EmployeeApplicationCard(
                 value = application.address,
                 onClick = {
                     showOnMapClick()
-                }
+                },
+                icon = R.drawable.location_pin_icon
             )
 
             InfoRow(
                 label = "Телефон",
                 value = application.phone,
-                onClick = {}
+                onClick = {},
+                icon = R.drawable.phone_icon
             )
 
             InfoRow(
                 label = "Описание",
                 value = application.description,
                 maxLines = 2,
-                onClick = {}
+                onClick = {},
+                icon = R.drawable.description_icon
             )
 
             Button(
@@ -322,7 +326,8 @@ fun InfoRow(
     label: String,
     value: String,
     maxLines: Int = 1,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    icon: Int
 ) {
     Row(
         modifier = Modifier
@@ -333,14 +338,13 @@ fun InfoRow(
             },
         verticalAlignment = Alignment.Top
     ) {
-        Box(
+        Icon(
+            painter = painterResource(icon),
+            contentDescription = null,
+            tint = colorResource(R.color.Orange),
             modifier = Modifier
                 .padding(top = 2.dp)
-                .size(10.dp)
-                .background(
-                    color = colorResource(R.color.Orange).copy(alpha = 0.7f),
-                    shape = CircleShape
-                )
+                .size(20.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column {
@@ -352,11 +356,20 @@ fun InfoRow(
             )
             Text(
                 text = value,
-                color = Color.Black,
+                color = if(label == "Адрес"){
+                    Color.Blue
+                } else{
+                    Color.Black
+                },
                 fontFamily = interRegular,
                 fontSize = 15.sp,
                 maxLines = maxLines,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                textDecoration = if(label == "Адрес"){
+                    TextDecoration.Underline
+                } else{
+                    TextDecoration.None
+                }
             )
         }
     }

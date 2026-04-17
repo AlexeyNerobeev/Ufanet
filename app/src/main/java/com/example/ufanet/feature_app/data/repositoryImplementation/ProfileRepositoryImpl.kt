@@ -1,5 +1,7 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
+import com.example.ufanet.feature_app.data.dto.ProfileDto
+import com.example.ufanet.feature_app.data.mappers.toModel
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Profile
 import com.example.ufanet.feature_app.domain.models.User
@@ -14,7 +16,13 @@ class ProfileRepositoryImpl(
     private val loadUserIdUseCase: LoadUserIdUseCase
 ): ProfileRepository {
     override suspend fun addNewProfile(companyName: String, phone: String, email: String) {
-        val profile = Profile(company_name = companyName, phone = phone, email = email, status = "клиент", user_id = loadUserIdUseCase.invoke())
+        val profile = ProfileDto(
+            company_name = companyName,
+            phone = phone,
+            email = email,
+            status = "клиент",
+            user_id = loadUserIdUseCase.invoke()
+        )
         supabase.from("profile").insert(profile)
     }
 
@@ -33,11 +41,11 @@ class ProfileRepositoryImpl(
                     eq("user_id", loadUserIdUseCase.invoke())
                 }
             }
-        }.decodeSingle<Profile>()
+        }.decodeSingle<ProfileDto>().toModel()
     }
 
     override suspend fun updateProfile(companyName: String, phone: String) {
-        val profile = Profile(company_name = companyName, phone = phone)
+        val profile = ProfileDto(company_name = companyName, phone = phone)
         supabase.from("profile").update(profile) {
             filter {
                 and {
@@ -58,7 +66,20 @@ class ProfileRepositoryImpl(
                     eq("user_id", getUserId())
                 }
             }
-        }.decodeSingle<Profile>()
+        }.decodeSingle<ProfileDto>().toModel()
+    }
+
+    override suspend fun getCompanyInfo(): Profile {
+        return supabase.postgrest["profile"].select(
+            columns = Columns.list(
+                "company_name",
+                "phone"
+            )
+        ){
+            filter {
+                eq("user_id", loadUserIdUseCase.invoke())
+            }
+        }.decodeSingle<ProfileDto>().toModel()
     }
 
     suspend fun getUserId(): String {

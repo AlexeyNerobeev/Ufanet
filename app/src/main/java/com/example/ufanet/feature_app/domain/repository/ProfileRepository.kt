@@ -8,4 +8,5 @@ interface ProfileRepository {
     suspend fun getProfile(): Profile
     suspend fun updateProfile(companyName: String, phone: String)
     suspend fun getProfileStatus(): Profile
+    suspend fun getCompanyInfo(): Profile
 }

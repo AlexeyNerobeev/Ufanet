@@ -12,5 +12,7 @@ data class MapState(
     val enterpriseAddress: String = "",
     val route: Polyline? = null,
     val isLoading: Boolean = true,
-    val isRouteLoading: Boolean = false
+    val isRouteLoading: Boolean = false,
+    val distanceText: String = "",
+    val timeText: String = ""
 )
