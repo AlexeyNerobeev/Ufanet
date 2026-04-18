@@ -25,6 +25,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -47,7 +50,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -188,7 +194,9 @@ fun EmployeeSearchScreen(navController: NavController, vm: EmployeeSearchVM = hi
                                 onClick = {
                                     navController.navigate(NavRoutes.CommentsScreen.createRoute(item.id))
                                 },
-                                enabled = !state.showFilter
+                                enabled = !state.showFilter,
+                                navController = navController,
+                                itemId = item.id
                             )
                         }
                         item {
@@ -318,7 +326,10 @@ fun SearchField(
                         tint = colorResource(R.color.Orange)
                     )
                 }
-            }
+            },
+            keyboardActions = KeyboardActions(
+                onAny = {onSearch()}
+            )
         )
     }
 }
@@ -327,7 +338,9 @@ fun SearchField(
 fun SearchResultCard(
     application: Application,
     onClick: () -> Unit,
-    enabled: Boolean
+    enabled: Boolean,
+    navController: NavController,
+    itemId: Int
 ) {
     Card(
         modifier = Modifier
@@ -406,19 +419,25 @@ fun SearchResultCard(
 
             InfoRowCompact(
                 icon = R.drawable.location_pin_icon,
-                text = application.address
+                text = application.address,
+                navController = navController,
+                itemId = itemId
             )
 
             InfoRowCompact(
                 icon = R.drawable.phone_icon,
-                text = application.phone
+                text = application.phone,
+                navController = navController,
+                itemId = itemId
             )
 
             if (application.description.isNotEmpty()) {
                 InfoRowCompact(
                     icon = R.drawable.description_icon,
                     text = application.description,
-                    maxLines = 1
+                    maxLines = 1,
+                    navController = navController,
+                    itemId = itemId
                 )
             }
         }
@@ -429,7 +448,9 @@ fun SearchResultCard(
 fun InfoRowCompact(
     icon: Int,
     text: String,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    navController: NavController,
+    itemId: Int
 ) {
     Row(
         modifier = Modifier
@@ -448,11 +469,24 @@ fun InfoRowCompact(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            color = Color.Gray,
+            color = if (icon == R.drawable.location_pin_icon) {
+                Color.Blue
+            } else {
+                Color.Gray
+            },
             fontFamily = interRegular,
             fontSize = 13.sp,
             maxLines = maxLines,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            textDecoration = if (icon == R.drawable.location_pin_icon) {
+                TextDecoration.Underline
+            } else {
+                TextDecoration.None
+            },
+            modifier = Modifier
+                .clickable{
+                    navController.navigate(NavRoutes.MapScreen.createRoute(itemId))
+                }
         )
     }
 }
@@ -566,28 +600,52 @@ fun FilterBottomSheet(
                         FilterChip(
                             text = "Названию",
                             isSelected = state.selectSearch == 1,
-                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(1)) }
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedSearch(
+                                        if (state.selectSearch != 1) 1 else 0
+                                    )
+                                )
+                            }
                         )
                     }
                     item {
                         FilterChip(
                             text = "Адресу",
                             isSelected = state.selectSearch == 2,
-                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(2)) }
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedSearch(
+                                        if (state.selectSearch != 2) 2 else 0
+                                    )
+                                )
+                            }
                         )
                     }
                     item {
                         FilterChip(
                             text = "Телефону",
                             isSelected = state.selectSearch == 3,
-                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(3)) }
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedSearch(
+                                        if (state.selectSearch != 3) 3 else 0
+                                    )
+                                )
+                            }
                         )
                     }
                     item {
                         FilterChip(
                             text = "Описанию",
                             isSelected = state.selectSearch == 4,
-                            onClick = { onEvent(EmployeeSearchEvent.SelectedSearch(4)) }
+                            onClick = {
+                                onEvent(
+                                    EmployeeSearchEvent.SelectedSearch(
+                                        if (state.selectSearch != 4) 4 else 0
+                                    )
+                                )
+                            }
                         )
                     }
                 }

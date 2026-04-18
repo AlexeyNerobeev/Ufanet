@@ -1,20 +1,20 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
-import android.util.Log
-import com.example.ufanet.App
+import com.example.ufanet.feature_app.data.dao.ApplicationDao
 import com.example.ufanet.feature_app.data.dto.ApplicationDto
+import com.example.ufanet.feature_app.data.mappers.toDao
 import com.example.ufanet.feature_app.data.mappers.toModel
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
 import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
-import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 
 class ApplicationRepositoryImpl(
-    private val loadUserIdUseCase: LoadUserIdUseCase
+    private val loadUserIdUseCase: LoadUserIdUseCase,
+    private val applicationDao: ApplicationDao
 ) : ApplicationRepository {
     override suspend fun addApplication(
         companyName: String,
@@ -173,11 +173,22 @@ class ApplicationRepositoryImpl(
             filter {
                 and {
                     if (searchText.isNotEmpty()) {
-                        ilike(column, "%${searchText}%")
+                        if (column.isNotEmpty()) {
+                            ilike(column, "%$searchText%")
+                        } else {
+                            or {
+                                ilike("company_name", "%$searchText%")
+                                ilike("address", "%$searchText%")
+                                ilike("phone", "%$searchText%")
+                                ilike("description", "%$searchText%")
+                            }
+                        }
                     }
+
                     if (status.isNotEmpty()) {
                         eq("status", status)
                     }
+
                     if (commentsCount >= 0) {
                         if (commentsCount > 2) {
                             gt("comments_count", 2)
@@ -202,5 +213,34 @@ class ApplicationRepositoryImpl(
                 eq("id", applicationId)
             }
         }.decodeSingle<ApplicationDto>().toModel()
+    }
+
+    override suspend fun getAllCacheApplications(): List<Application> {
+        return applicationDao.getAllCacheApplications().map { it.toModel() }
+    }
+
+    override suspend fun saveCacheApplications(applications: List<Application>) {
+        applicationDao.saveCacheApplications(applications.map { it.toDao() })
+    }
+
+    override suspend fun getFilterCacheApplications(
+        searchText: String,
+        status: String,
+        commentsCount: Int,
+        column: String
+    ): List<Application> {
+
+        val text = searchText.takeIf { it.isNotBlank() }
+        val stat = status.takeIf { it.isNotBlank() }
+
+        val result = when (column) {
+            "company_name" -> applicationDao.searchByCompanyName(text, stat, commentsCount)
+            "address" -> applicationDao.searchByAddress(text, stat, commentsCount)
+            "phone" -> applicationDao.searchByPhone(text, stat, commentsCount)
+            "description" -> applicationDao.searchByDescription(text, stat, commentsCount)
+            else -> applicationDao.searchInAllFields(text, stat, commentsCount)
+        }
+
+        return result.map { it.toModel() }
     }
 }

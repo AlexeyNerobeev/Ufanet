@@ -1,6 +1,9 @@
 package com.example.ufanet.di
 
 import android.content.Context
+import androidx.room.Room
+import com.example.ufanet.feature_app.data.dao.ApplicationDao
+import com.example.ufanet.feature_app.data.db.AppDatabase
 import com.example.ufanet.feature_app.data.repositoryImplementation.ApplicationRepositoryImpl
 import com.example.ufanet.feature_app.data.repositoryImplementation.AuthRepositoryImpl
 import com.example.ufanet.feature_app.data.repositoryImplementation.CommentRepositoryImpl
@@ -16,6 +19,7 @@ import com.example.ufanet.feature_app.domain.usecase.AddCommentUseCase
 import com.example.ufanet.feature_app.domain.usecase.AddProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.DeleteUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetAllApplicationsUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetAllCacheApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationForUpdateUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationMapInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetApplicationStatusUseCase
@@ -24,11 +28,13 @@ import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUs
 import com.example.ufanet.feature_app.domain.usecase.GetCompanyInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCurrentUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetFilterCacheApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.LoadUserStatusUseCase
 import com.example.ufanet.feature_app.domain.usecase.RemoveApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.SaveCacheApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.SaveUserIdUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignInUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignOutUseCase
@@ -43,14 +49,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
     @Provides
-    fun provideApplicationRepository(loadUserIdUseCase: LoadUserIdUseCase): ApplicationRepository{
-        return ApplicationRepositoryImpl(loadUserIdUseCase)
+    fun provideApplicationRepository(loadUserIdUseCase: LoadUserIdUseCase, applicationDao: ApplicationDao): ApplicationRepository{
+        return ApplicationRepositoryImpl(loadUserIdUseCase, applicationDao)
     }
 
     @Provides
@@ -208,5 +215,36 @@ class AppModule {
     @Provides
     fun providesGetCompanyInfoUseCase(profileRepository: ProfileRepository): GetCompanyInfoUseCase{
         return GetCompanyInfoUseCase(profileRepository)
+    }
+
+    @Provides
+    fun provideAppDatabase(
+        @ApplicationContext context: Context
+    ): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "app_db"
+        ).build()
+    }
+
+    @Provides
+    fun provideApplicationDao(appDatabase: AppDatabase): ApplicationDao{
+        return appDatabase.applicationDao()
+    }
+
+    @Provides
+    fun provideGetAllCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetAllCacheApplicationsUseCase{
+        return GetAllCacheApplicationsUseCase(applicationRepository)
+    }
+
+    @Provides
+    fun provideSaveCacheApplicationsUseCase(applicationRepository: ApplicationRepository): SaveCacheApplicationsUseCase{
+        return SaveCacheApplicationsUseCase(applicationRepository)
+    }
+
+    @Provides
+    fun provideGetFilterCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetFilterCacheApplicationsUseCase{
+        return GetFilterCacheApplicationsUseCase(applicationRepository)
     }
 }

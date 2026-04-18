@@ -238,9 +238,9 @@ fun ProfileScreen(navController: NavController, vm: ProfileVM = hiltViewModel())
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.client_icon),
+                                painter = painterResource(R.drawable.company_icon),
                                 contentDescription = null,
-                                tint = Color.Unspecified,
+                                tint = colorResource(R.color.Orange),
                                 modifier = Modifier.size(60.dp)
                             )
                         }

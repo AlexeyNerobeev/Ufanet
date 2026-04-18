@@ -3,14 +3,11 @@ package com.example.ufanet.feature_app.presentation.SignUp
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.AddProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.SignUpUseCase
-import com.example.ufanet.feature_app.domain.usecase.UpdateProfileUseCase
 import com.example.ufanet.feature_app.domain.usecase.ValidateCredentialsUseCase
-import com.example.ufanet.feature_app.presentation.Applications.ApplicationsEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

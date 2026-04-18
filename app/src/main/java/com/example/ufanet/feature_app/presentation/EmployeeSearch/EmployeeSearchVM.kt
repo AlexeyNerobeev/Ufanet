@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetFilterCacheApplicationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EmployeeSearchVM @Inject constructor(
-    private val getFilterApplicationUseCase: GetFilterApplicationUseCase
+    private val getFilterApplicationUseCase: GetFilterApplicationUseCase,
+    private val getFilterCacheApplicationsUseCase: GetFilterCacheApplicationsUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(EmployeeSearchState())
     val state: State<EmployeeSearchState> = _state
@@ -63,7 +65,7 @@ class EmployeeSearchVM @Inject constructor(
                         2 -> "Адрес..."
                         3 -> "Телефон..."
                         4 -> "Описание проблемы..."
-                        else -> "Название организации..."
+                        else -> "Поиск..."
                     },
                     filterSearch = when (state.value.selectSearch) {
                         1 -> "company_name"
@@ -108,9 +110,18 @@ class EmployeeSearchVM @Inject constructor(
                             commentsCount =  state.value.filterComments
                         )
                     )
-                    Log.i("filter", state.value.filterStatus)
+                    Log.i("loadFromServer", "данные загружены с сервера")
                 } catch (ex: Exception) {
                     Log.e("supabase", ex.message.toString())
+                    _state.value = state.value.copy(
+                        applicationsList = getFilterCacheApplicationsUseCase.invoke(
+                            searchText = state.value.searchText,
+                            column = state.value.filterSearch,
+                            status =  state.value.filterStatus,
+                            commentsCount =  state.value.filterComments
+                        )
+                    )
+                    Log.i("loadCache", "загружены кэшированые данные: ${state.value.applicationsList}")
                 }
             }
         }
