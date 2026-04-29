@@ -1,6 +1,7 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
 import android.util.Log
+import com.entrig.sdk.Entrig
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.User
 import com.example.ufanet.feature_app.domain.repository.AuthRepository
@@ -24,6 +25,7 @@ class AuthRepositoryImpl(
         val status = getProfileStatusUseCase.invoke().status
         id?.let {
             saveUserIdUseCase.invoke(id, status)
+            Entrig.register(id)
         }
     }
 
@@ -35,6 +37,7 @@ class AuthRepositoryImpl(
         val id = getCurrentUserId().id
         id?.let {
             saveUserIdUseCase.invoke(id, "клиент")
+            Entrig.register(id)
         }
     }
 
@@ -47,5 +50,6 @@ class AuthRepositoryImpl(
     override suspend fun signOut() {
         supabase.auth.signOut()
         deleteUserIdUseCase.invoke()
+        Entrig.unregister()
     }
 }

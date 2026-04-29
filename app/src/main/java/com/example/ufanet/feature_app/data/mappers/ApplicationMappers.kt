@@ -12,7 +12,9 @@ internal fun Application.toDto() = ApplicationDto(
     user_id = user_id,
     address = address,
     status = status,
-    comments_count = comments_count
+    comments_count = comments_count,
+    created_at = created_at,
+    assigned_to = assigned_to
 )
 
 internal fun ApplicationDto.toModel() = Application(
@@ -23,7 +25,9 @@ internal fun ApplicationDto.toModel() = Application(
     user_id = user_id,
     address = address,
     status = status,
-    comments_count = comments_count
+    comments_count = comments_count,
+    created_at = created_at,
+    assigned_to = assigned_to
 )
 
 internal fun Application.toDao() = ApplicationEntity(
@@ -34,7 +38,9 @@ internal fun Application.toDao() = ApplicationEntity(
     description = description,
     user_id = user_id,
     status = status,
-    comments_count = comments_count
+    comments_count = comments_count,
+    created_at = created_at,
+    assigned_to = assigned_to,
 )
 
 internal fun ApplicationEntity.toModel() = Application(
@@ -45,5 +51,7 @@ internal fun ApplicationEntity.toModel() = Application(
     user_id = user_id,
     address = address,
     status = status,
-    comments_count = comments_count
+    comments_count = comments_count,
+    created_at = created_at,
+    assigned_to = assigned_to
 )

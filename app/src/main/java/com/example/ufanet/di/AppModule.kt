@@ -27,6 +27,7 @@ import com.example.ufanet.feature_app.domain.usecase.GetApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCommentsForApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCompanyInfoUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetCurrentUserIdUseCase
+import com.example.ufanet.feature_app.domain.usecase.GetEmployeeStatsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetFilterApplicationUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetFilterCacheApplicationsUseCase
 import com.example.ufanet.feature_app.domain.usecase.GetProfileStatusUseCase
@@ -56,164 +57,169 @@ import kotlin.jvm.java
 class AppModule {
 
     @Provides
-    fun provideApplicationRepository(loadUserIdUseCase: LoadUserIdUseCase, applicationDao: ApplicationDao): ApplicationRepository{
+    fun provideApplicationRepository(
+        loadUserIdUseCase: LoadUserIdUseCase,
+        applicationDao: ApplicationDao
+    ): ApplicationRepository {
         return ApplicationRepositoryImpl(loadUserIdUseCase, applicationDao)
     }
 
     @Provides
-    fun provideAuthRepository(saveUserIdUseCase: SaveUserIdUseCase,
-                              deleteUserIdUseCase: DeleteUserIdUseCase,
-                              getProfileStatusUseCase: GetProfileStatusUseCase): AuthRepository{
+    fun provideAuthRepository(
+        saveUserIdUseCase: SaveUserIdUseCase,
+        deleteUserIdUseCase: DeleteUserIdUseCase,
+        getProfileStatusUseCase: GetProfileStatusUseCase
+    ): AuthRepository {
         return AuthRepositoryImpl(saveUserIdUseCase, deleteUserIdUseCase, getProfileStatusUseCase)
     }
 
     @Provides
-    fun provideCommentRepository(loadUserIdUseCase: LoadUserIdUseCase): CommentRepository{
+    fun provideCommentRepository(loadUserIdUseCase: LoadUserIdUseCase): CommentRepository {
         return CommentRepositoryImpl(loadUserIdUseCase)
     }
 
     @Provides
-    fun provideCurrentSessionRepository(@ApplicationContext context: Context): CurrentSessionRepository{
+    fun provideCurrentSessionRepository(@ApplicationContext context: Context): CurrentSessionRepository {
         return CurrentSessionRepositoryImpl(context)
     }
 
     @Provides
-    fun provideProfileRepository(loadUserIdUseCase: LoadUserIdUseCase): ProfileRepository{
+    fun provideProfileRepository(loadUserIdUseCase: LoadUserIdUseCase): ProfileRepository {
         return ProfileRepositoryImpl(loadUserIdUseCase)
     }
 
     @Provides
-    fun provideAddApplicationUseCase(applicationRepository: ApplicationRepository): AddApplicationUseCase{
+    fun provideAddApplicationUseCase(applicationRepository: ApplicationRepository): AddApplicationUseCase {
         return AddApplicationUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideAddCommentUseCase(commentRepository: CommentRepository): AddCommentUseCase{
+    fun provideAddCommentUseCase(commentRepository: CommentRepository): AddCommentUseCase {
         return AddCommentUseCase(commentRepository)
     }
 
     @Provides
-    fun provideAddProfileUseCase(profileRepository: ProfileRepository): AddProfileUseCase{
+    fun provideAddProfileUseCase(profileRepository: ProfileRepository): AddProfileUseCase {
         return AddProfileUseCase(profileRepository)
     }
 
     @Provides
-    fun provideGetAllApplicationsUseCase(applicationRepository: ApplicationRepository): GetAllApplicationsUseCase{
+    fun provideGetAllApplicationsUseCase(applicationRepository: ApplicationRepository): GetAllApplicationsUseCase {
         return GetAllApplicationsUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetApplicationForUpdateUseCase(applicationRepository: ApplicationRepository): GetApplicationForUpdateUseCase{
+    fun provideGetApplicationForUpdateUseCase(applicationRepository: ApplicationRepository): GetApplicationForUpdateUseCase {
         return GetApplicationForUpdateUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetApplicationStatusUseCase(applicationRepository: ApplicationRepository): GetApplicationStatusUseCase{
+    fun provideGetApplicationStatusUseCase(applicationRepository: ApplicationRepository): GetApplicationStatusUseCase {
         return GetApplicationStatusUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetApplicationsUseCase(applicationRepository: ApplicationRepository): GetApplicationsUseCase{
+    fun provideGetApplicationsUseCase(applicationRepository: ApplicationRepository): GetApplicationsUseCase {
         return GetApplicationsUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetCommentsForApplicationUseCase(commentRepository: CommentRepository): GetCommentsForApplicationUseCase{
+    fun provideGetCommentsForApplicationUseCase(commentRepository: CommentRepository): GetCommentsForApplicationUseCase {
         return GetCommentsForApplicationUseCase(commentRepository)
     }
 
     @Provides
-    fun provideGetCurrentUserIdUseCase(authRepository: AuthRepository): GetCurrentUserIdUseCase{
+    fun provideGetCurrentUserIdUseCase(authRepository: AuthRepository): GetCurrentUserIdUseCase {
         return GetCurrentUserIdUseCase(authRepository)
     }
 
     @Provides
-    fun provideGetFilterApplicationUseCase(applicationRepository: ApplicationRepository): GetFilterApplicationUseCase{
+    fun provideGetFilterApplicationUseCase(applicationRepository: ApplicationRepository): GetFilterApplicationUseCase {
         return GetFilterApplicationUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetProfileStatusUseCase(profileRepository: ProfileRepository): GetProfileStatusUseCase{
+    fun provideGetProfileStatusUseCase(profileRepository: ProfileRepository): GetProfileStatusUseCase {
         return GetProfileStatusUseCase(profileRepository)
     }
 
     @Provides
-    fun provideGetProfileUseCase(profileRepository: ProfileRepository): GetProfileUseCase{
+    fun provideGetProfileUseCase(profileRepository: ProfileRepository): GetProfileUseCase {
         return GetProfileUseCase(profileRepository)
     }
 
     @Provides
-    fun provideLoadUserIdUseCase(currentSessionRepository: CurrentSessionRepository): LoadUserIdUseCase{
+    fun provideLoadUserIdUseCase(currentSessionRepository: CurrentSessionRepository): LoadUserIdUseCase {
         return LoadUserIdUseCase(currentSessionRepository)
     }
 
     @Provides
-    fun provideRemoveApplicationUseCase(applicationRepository: ApplicationRepository): RemoveApplicationUseCase{
+    fun provideRemoveApplicationUseCase(applicationRepository: ApplicationRepository): RemoveApplicationUseCase {
         return RemoveApplicationUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideSaveUserIdUseCase(currentSessionRepository: CurrentSessionRepository): SaveUserIdUseCase{
+    fun provideSaveUserIdUseCase(currentSessionRepository: CurrentSessionRepository): SaveUserIdUseCase {
         return SaveUserIdUseCase(currentSessionRepository)
     }
 
     @Provides
-    fun provideSignInUseCase(authRepository: AuthRepository): SignInUseCase{
+    fun provideSignInUseCase(authRepository: AuthRepository): SignInUseCase {
         return SignInUseCase(authRepository)
     }
 
     @Provides
-    fun provideSignOutUseCase(authRepository: AuthRepository): SignOutUseCase{
+    fun provideSignOutUseCase(authRepository: AuthRepository): SignOutUseCase {
         return SignOutUseCase(authRepository)
     }
 
     @Provides
-    fun provideSignUpUseCase(authRepository: AuthRepository): SignUpUseCase{
+    fun provideSignUpUseCase(authRepository: AuthRepository): SignUpUseCase {
         return SignUpUseCase(authRepository)
     }
 
     @Provides
-    fun provideUpdateApplicationCommentsCountUseCase(applicationRepository: ApplicationRepository): UpdateApplicationCommentsCountUseCase{
+    fun provideUpdateApplicationCommentsCountUseCase(applicationRepository: ApplicationRepository): UpdateApplicationCommentsCountUseCase {
         return UpdateApplicationCommentsCountUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideUpdateApplicationStatusUseCase(applicationRepository: ApplicationRepository): UpdateApplicationStatusUseCase{
+    fun provideUpdateApplicationStatusUseCase(applicationRepository: ApplicationRepository): UpdateApplicationStatusUseCase {
         return UpdateApplicationStatusUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideUpdateApplicationUseCase(applicationRepository: ApplicationRepository): UpdateApplicationUseCase{
+    fun provideUpdateApplicationUseCase(applicationRepository: ApplicationRepository): UpdateApplicationUseCase {
         return UpdateApplicationUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideUpdateProfileUseCase(profileRepository: ProfileRepository): UpdateProfileUseCase{
+    fun provideUpdateProfileUseCase(profileRepository: ProfileRepository): UpdateProfileUseCase {
         return UpdateProfileUseCase(profileRepository)
     }
 
     @Provides
-    fun provideValidateCredentialsUseCase(): ValidateCredentialsUseCase{
+    fun provideValidateCredentialsUseCase(): ValidateCredentialsUseCase {
         return ValidateCredentialsUseCase()
     }
 
     @Provides
-    fun provideDeleteUserIdUseCase(currentSessionRepository: CurrentSessionRepository): DeleteUserIdUseCase{
+    fun provideDeleteUserIdUseCase(currentSessionRepository: CurrentSessionRepository): DeleteUserIdUseCase {
         return DeleteUserIdUseCase(currentSessionRepository)
     }
 
     @Provides
-    fun provideLoadUserStatusUseCase(currentSessionRepository: CurrentSessionRepository): LoadUserStatusUseCase{
+    fun provideLoadUserStatusUseCase(currentSessionRepository: CurrentSessionRepository): LoadUserStatusUseCase {
         return LoadUserStatusUseCase(currentSessionRepository)
     }
 
     @Provides
-    fun provideGetApplicationMapInfoUseCase(applicationRepository: ApplicationRepository): GetApplicationMapInfoUseCase{
+    fun provideGetApplicationMapInfoUseCase(applicationRepository: ApplicationRepository): GetApplicationMapInfoUseCase {
         return GetApplicationMapInfoUseCase(applicationRepository)
     }
 
     @Provides
-    fun providesGetCompanyInfoUseCase(profileRepository: ProfileRepository): GetCompanyInfoUseCase{
+    fun providesGetCompanyInfoUseCase(profileRepository: ProfileRepository): GetCompanyInfoUseCase {
         return GetCompanyInfoUseCase(profileRepository)
     }
 
@@ -225,26 +231,33 @@ class AppModule {
             context,
             AppDatabase::class.java,
             "app_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
-    fun provideApplicationDao(appDatabase: AppDatabase): ApplicationDao{
+    fun provideApplicationDao(appDatabase: AppDatabase): ApplicationDao {
         return appDatabase.applicationDao()
     }
 
     @Provides
-    fun provideGetAllCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetAllCacheApplicationsUseCase{
+    fun provideGetAllCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetAllCacheApplicationsUseCase {
         return GetAllCacheApplicationsUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideSaveCacheApplicationsUseCase(applicationRepository: ApplicationRepository): SaveCacheApplicationsUseCase{
+    fun provideSaveCacheApplicationsUseCase(applicationRepository: ApplicationRepository): SaveCacheApplicationsUseCase {
         return SaveCacheApplicationsUseCase(applicationRepository)
     }
 
     @Provides
-    fun provideGetFilterCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetFilterCacheApplicationsUseCase{
+    fun provideGetFilterCacheApplicationsUseCase(applicationRepository: ApplicationRepository): GetFilterCacheApplicationsUseCase {
         return GetFilterCacheApplicationsUseCase(applicationRepository)
+    }
+
+    @Provides
+    fun provideGetEmployeeStatsUseCase(applicationRepository: ApplicationRepository): GetEmployeeStatsUseCase{
+        return GetEmployeeStatsUseCase(applicationRepository)
     }
 }

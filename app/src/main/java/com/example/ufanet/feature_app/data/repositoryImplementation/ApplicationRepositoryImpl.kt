@@ -1,16 +1,20 @@
 package com.example.ufanet.feature_app.data.repositoryImplementation
 
+import android.util.Log
 import com.example.ufanet.feature_app.data.dao.ApplicationDao
 import com.example.ufanet.feature_app.data.dto.ApplicationDto
 import com.example.ufanet.feature_app.data.mappers.toDao
 import com.example.ufanet.feature_app.data.mappers.toModel
 import com.example.ufanet.feature_app.data.supabase.Connect.supabase
 import com.example.ufanet.feature_app.domain.models.Application
+import com.example.ufanet.feature_app.domain.models.EmployeeStats
 import com.example.ufanet.feature_app.domain.repository.ApplicationRepository
 import com.example.ufanet.feature_app.domain.usecase.LoadUserIdUseCase
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
+import java.time.LocalDateTime
 
 class ApplicationRepositoryImpl(
     private val loadUserIdUseCase: LoadUserIdUseCase,
@@ -22,13 +26,18 @@ class ApplicationRepositoryImpl(
         phone: String,
         description: String
     ) {
+        val employeeId = supabase.postgrest
+            .rpc("assign_employee")
+            .decodeAs<String>()
+        Log.d("EMPLOYEE_ID", employeeId)
         val application = ApplicationDto(
             company_name = companyName,
             address = address,
             phone = phone,
             description = description,
             user_id = loadUserIdUseCase.invoke(),
-            status = "Не принята"
+            status = "Не принята",
+            assigned_to = employeeId
         )
         supabase.postgrest["applications"].insert(application)
     }
@@ -112,9 +121,17 @@ class ApplicationRepositoryImpl(
                 "phone",
                 "description",
                 "status",
-                "comments_count"
+                "comments_count",
+                "created_at"
             )
-        ).decodeList<ApplicationDto>().map { it.toModel() }
+        ) {
+            filter {
+                and {
+                    eq("assigned_to", loadUserIdUseCase.invoke())
+                }
+            }
+            order("created_at", Order.ASCENDING)
+        }.decodeList<ApplicationDto>().map { it.toModel() }
     }
 
     override suspend fun getApplicationStatus(applicationId: Int): Application {
@@ -242,5 +259,30 @@ class ApplicationRepositoryImpl(
         }
 
         return result.map { it.toModel() }
+    }
+
+    override suspend fun getEmployeeStats(employeeId: String): EmployeeStats {
+
+        val applications = supabase.postgrest["applications"]
+            .select {
+                filter {
+                    eq("assigned_to", employeeId)
+                }
+            }
+            .decodeList<ApplicationDto>()
+
+        val now = LocalDateTime.now()
+        val weekAgo = now.minusDays(7)
+
+        return EmployeeStats(
+            total = applications.size,
+            new = applications.count { it.status == "Не принята" },
+            inProgress = applications.count { it.status == "Принята" },
+            done = applications.count { it.status == "Выполнена" },
+            overdue = applications.count {
+                it.status != "Выполнена" &&
+                        LocalDateTime.parse(it.created_at).isBefore(weekAgo)
+            }
+        )
     }
 }

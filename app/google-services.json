@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "492724387735",
+    "project_id": "applications-a2611",
+    "storage_bucket": "applications-a2611.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492724387735:android:95db3a13dbf54dcd834ed2",
+        "android_client_info": {
+          "package_name": "com.example.ufanet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2l1BCm1BvvMqs8QjL_WQruvdrxZRXvIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

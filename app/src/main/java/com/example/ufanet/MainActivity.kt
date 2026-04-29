@@ -15,6 +15,7 @@ import com.example.ufanet.feature_app.presentation.Comments.CommentsScreen
 import com.example.ufanet.feature_app.presentation.EmployeeHome.EmployeeHomeScreen
 import com.example.ufanet.feature_app.presentation.EmployeeProfile.EmployeeProfileScreen
 import com.example.ufanet.feature_app.presentation.EmployeeSearch.EmployeeSearchScreen
+import com.example.ufanet.feature_app.presentation.EmployeeStats.EmployeeStatsScreen
 import com.example.ufanet.feature_app.presentation.Home.HomeScreen
 import com.example.ufanet.feature_app.presentation.Map.MapScreen
 import com.example.ufanet.feature_app.presentation.Profile.ProfileScreen
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                     val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
                     MapScreen(navController, itemId)
                 }
+                composable(NavRoutes.EmployeeStatsScreen.route) { EmployeeStatsScreen(navController) }
             }
         }
     }

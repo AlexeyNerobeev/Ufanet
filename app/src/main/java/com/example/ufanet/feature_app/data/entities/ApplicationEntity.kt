@@ -13,5 +13,7 @@ data class ApplicationEntity(
     val description: String,
     val user_id: String,
     val status: String,
-    val comments_count: Int
+    val comments_count: Int,
+    val created_at: String = "",
+    val assigned_to: String? = null
 )

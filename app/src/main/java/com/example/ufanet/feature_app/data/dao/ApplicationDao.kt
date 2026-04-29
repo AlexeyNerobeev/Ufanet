@@ -9,7 +9,17 @@ import com.example.ufanet.feature_app.domain.models.Application
 
 @Dao
 interface ApplicationDao {
-    @Query("SELECT * FROM applications")
+    @Query("""
+SELECT * FROM applications 
+ORDER BY 
+    CASE 
+        WHEN status = 'Не принята' THEN 0
+        WHEN status = 'Принята' THEN 1
+        WHEN status = 'Выполнена' THEN 2
+        ELSE 3
+    END,
+    created_at ASC
+""")
     suspend fun getAllCacheApplications(): List<ApplicationEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

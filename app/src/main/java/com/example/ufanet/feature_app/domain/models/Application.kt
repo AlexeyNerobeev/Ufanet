@@ -10,5 +10,7 @@ data class Application(
     val user_id: String = "",
     val address: String = "",
     val status: String = "",
-    val comments_count: Int = 0
-    )
+    val comments_count: Int = 0,
+    val created_at: String = "",
+    val assigned_to: String? = null
+)

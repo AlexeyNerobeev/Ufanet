@@ -1,6 +1,7 @@
 package com.example.ufanet.feature_app.domain.repository
 
 import com.example.ufanet.feature_app.domain.models.Application
+import com.example.ufanet.feature_app.domain.models.EmployeeStats
 
 interface ApplicationRepository {
     suspend fun addApplication(companyName: String,
@@ -27,4 +28,5 @@ interface ApplicationRepository {
                                            status: String,
                                            commentsCount: Int,
                                            column: String): List<Application>
+    suspend fun getEmployeeStats(employeeId: String): EmployeeStats
 }

@@ -267,6 +267,34 @@ fun EmployeeProfileScreen(navController: NavController, vm: EmployeeProfileVM = 
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                Button(
+                    onClick = { navController.navigate(NavRoutes.EmployeeStatsScreen.route) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .shadow(8.dp, RoundedCornerShape(16.dp)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.Orange)
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.stats_icon),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Посмотреть статистику",
+                        color = Color.White,
+                        fontFamily = interBold,
+                        fontSize = 16.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Text(
                     text = "Информация об организации",
                     color = Color.Black,
