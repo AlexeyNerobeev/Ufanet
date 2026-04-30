@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,7 +86,8 @@ fun ApplicationsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xFFF5F7FA)
+        containerColor = Color(0xFFF5F7FA),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -94,16 +97,17 @@ fun ApplicationsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp)
                     .background(
-                        color = colorResource(R.color.Orange),
+                        colorResource(R.color.Orange),
                         shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
                     )
             ) {
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxSize(),
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .height(70.dp)
+                        .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -238,18 +242,23 @@ fun ApplicationsScreen(
                     SaveButton(
                         isLoading = state.isLoading,
                         isEdit = state.id > 0,
+                        hasChanges = state.hasChanges,
                         onSave = {
-                            if (state.id > 0) {
-                                vm.onEvent(ApplicationsEvent.UpdateApplication)
+                            if (state.hasChanges) {
+                                if (state.id > 0) {
+                                    vm.onEvent(ApplicationsEvent.UpdateApplication)
+                                } else {
+                                    vm.onEvent(ApplicationsEvent.SaveApplication)
+                                }
                             } else {
-                                vm.onEvent(ApplicationsEvent.SaveApplication)
+                                vm.onEvent(ApplicationsEvent.ShowError)
                             }
                         }
                     )
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
             }
         }
@@ -345,11 +354,12 @@ fun FormField(
 fun SaveButton(
     isLoading: Boolean,
     isEdit: Boolean,
+    hasChanges: Boolean,
     onSave: () -> Unit
 ) {
     Button(
         onClick = onSave,
-        enabled = !isLoading,
+        enabled = hasChanges && !isLoading,
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
@@ -367,13 +377,13 @@ fun SaveButton(
                     if (isEdit) R.drawable.save_icon else R.drawable.add_icon
                 ),
                 contentDescription = null,
-                tint = Color.White,
+                tint = if (hasChanges) Color.White else Color.Gray,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = if (isEdit) "Сохранить изменения" else "Создать заявку",
-                color = Color.White,
+                color = if (hasChanges) Color.White else Color.Gray,
                 fontFamily = interBold,
                 fontSize = 16.sp
             )

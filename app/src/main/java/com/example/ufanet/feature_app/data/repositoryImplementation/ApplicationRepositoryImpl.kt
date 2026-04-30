@@ -261,28 +261,32 @@ class ApplicationRepositoryImpl(
         return result.map { it.toModel() }
     }
 
-    override suspend fun getEmployeeStats(employeeId: String): EmployeeStats {
+    override suspend fun getEmployeeStats(
+        employeeId: String,
+        from: String?,
+        to: String?
+    ): EmployeeStats {
 
         val applications = supabase.postgrest["applications"]
             .select {
                 filter {
-                    eq("assigned_to", employeeId)
+                    and {
+                        eq("assigned_to", employeeId)
+
+                        if (from != null && to != null) {
+                            gte("created_at", from)
+                            lte("created_at", to)
+                        }
+                    }
                 }
             }
             .decodeList<ApplicationDto>()
-
-        val now = LocalDateTime.now()
-        val weekAgo = now.minusDays(7)
 
         return EmployeeStats(
             total = applications.size,
             new = applications.count { it.status == "Не принята" },
             inProgress = applications.count { it.status == "Принята" },
-            done = applications.count { it.status == "Выполнена" },
-            overdue = applications.count {
-                it.status != "Выполнена" &&
-                        LocalDateTime.parse(it.created_at).isBefore(weekAgo)
-            }
+            done = applications.count { it.status == "Выполнена" }
         )
     }
 }

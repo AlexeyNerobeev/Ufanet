@@ -8,5 +8,10 @@ data class ApplicationsState(
     val description: String = "",
     val isComplete: Boolean = false,
     val error: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val hasChanges: Boolean = false,
+    val initialCompanyName: String = "",
+    val initialAddress: String = "",
+    val initialPhone: String = "",
+    val initialDescription: String = ""
 )

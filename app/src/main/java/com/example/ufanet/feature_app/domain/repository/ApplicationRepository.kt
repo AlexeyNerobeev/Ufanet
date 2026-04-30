@@ -28,5 +28,7 @@ interface ApplicationRepository {
                                            status: String,
                                            commentsCount: Int,
                                            column: String): List<Application>
-    suspend fun getEmployeeStats(employeeId: String): EmployeeStats
+    suspend fun getEmployeeStats(employeeId: String,
+                                 from: String? = null,
+                                 to: String? = null): EmployeeStats
 }

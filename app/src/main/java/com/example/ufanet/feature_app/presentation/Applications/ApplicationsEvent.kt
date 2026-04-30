@@ -10,4 +10,5 @@ sealed class ApplicationsEvent {
     data class GetApplicationForUpdate(val value: Int): ApplicationsEvent()
     data object UpdateApplication: ApplicationsEvent()
     data object GetCompanyInfo: ApplicationsEvent()
+    data object ShowError: ApplicationsEvent()
 }
