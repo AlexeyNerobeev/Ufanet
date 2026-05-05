@@ -27,22 +27,33 @@ class HomeVM @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO){
                     try{
                         _state.value = state.value.copy(
-                            application = getApplicationsUseCase.invoke()
+                            application = getApplicationsUseCase.invoke(),
+                            isLoading = false
                         )
                     } catch (ex: Exception){
                         Log.e("supabase", ex.message.toString())
+                        _state.value = state.value.copy(
+                            isLoading = false
+                        )
                     }
                 }
             }
             is HomeEvent.RemoveApplication -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     try {
+                        _state.value = state.value.copy(
+                            isLoading = true
+                        )
                         removeApplicationUseCase.invoke(event.value)
                         _state.value = state.value.copy(
-                            application = getApplicationsUseCase.invoke()
+                            application = getApplicationsUseCase.invoke(),
+                            isLoading = false
                         )
                     } catch (ex: Exception) {
                         Log.e("supabase", ex.message.toString())
+                        _state.value = state.value.copy(
+                            isLoading = false
+                        )
                     }
                 }
             }

@@ -34,10 +34,14 @@ class EmployeeStatsVM @Inject constructor(
                         val stats = getEmployeeStatsUseCase.invoke(userId, null, null)
 
                         _state.value = state.value.copy(
-                            stats = stats
+                            stats = stats,
+                            isLoading = false
                         )
                     } catch (e: Exception) {
                         Log.e("supabase", e.message.toString())
+                        _state.value = state.value.copy(
+                            isLoading = false
+                        )
                     }
                 }
             }

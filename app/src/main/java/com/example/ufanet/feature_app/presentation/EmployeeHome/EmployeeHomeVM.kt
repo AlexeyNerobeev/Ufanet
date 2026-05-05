@@ -30,13 +30,15 @@ class EmployeeHomeVM @Inject constructor(
                         val remote = getAllApplicationsUseCase.invoke()
                         saveCacheApplicationsUseCase.invoke(remote)
                         _state.value = state.value.copy(
-                            application = getAllCacheApplicationsUseCase.invoke()
+                            application = getAllCacheApplicationsUseCase.invoke(),
+                            isLoading = false
                         )
                         Log.i("loadFromServer", "данные загружены с сервера")
                     } catch (ex: Exception) {
                         Log.e("supabase", ex.message.toString())
                         _state.value = state.value.copy(
-                            application = getAllCacheApplicationsUseCase.invoke()
+                            application = getAllCacheApplicationsUseCase.invoke(),
+                            isLoading = false
                         )
                         Log.i("loadFromLocal", "загружены кэшированные данные")
                     }

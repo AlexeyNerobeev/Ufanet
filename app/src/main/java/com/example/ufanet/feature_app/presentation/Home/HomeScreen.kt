@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -162,7 +163,7 @@ fun HomeScreen(navController: NavController, vm: HomeVM = hiltViewModel()) {
             ) {
                 if (state.application.isEmpty()) {
                     item {
-                        EmptyStateView()
+                        EmptyStateView(state.isLoading)
                     }
                 } else {
                     items(state.application) { item ->
@@ -406,42 +407,51 @@ fun InfoRow(
 }
 
 @Composable
-fun EmptyStateView() {
+fun EmptyStateView(
+    isLoading: Boolean
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .background(
-                    color = colorResource(R.color.Orange).copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(60.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.add_icon),
-                contentDescription = null,
-                tint = colorResource(R.color.Orange).copy(alpha = 0.5f),
-                modifier = Modifier.size(60.dp)
+        if(isLoading){
+            CircularProgressIndicator(color = colorResource(R.color.Orange),
+                strokeWidth = 7.dp,
+                modifier = Modifier
+                    .size(100.dp))
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .background(
+                        color = colorResource(R.color.Orange).copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(60.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.add_icon),
+                    contentDescription = null,
+                    tint = colorResource(R.color.Orange).copy(alpha = 0.5f),
+                    modifier = Modifier.size(60.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Нет активных заявок",
+                color = Color.Black,
+                fontFamily = interBold,
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Нажмите '+' чтобы создать новую заявку",
+                color = Color.Gray,
+                fontFamily = interRegular,
+                fontSize = 14.sp
             )
         }
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "Нет активных заявок",
-            color = Color.Black,
-            fontFamily = interBold,
-            fontSize = 20.sp
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Нажмите '+' чтобы создать новую заявку",
-            color = Color.Gray,
-            fontFamily = interRegular,
-            fontSize = 14.sp
-        )
     }
 }

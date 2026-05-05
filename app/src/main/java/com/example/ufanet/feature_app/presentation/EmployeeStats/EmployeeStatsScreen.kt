@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,7 +85,6 @@ fun EmployeeStatsScreen(
                 .fillMaxSize()
                 .background(Color.White)
         ) {
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -130,49 +130,59 @@ fun EmployeeStatsScreen(
                     Spacer(modifier = Modifier.size(40.dp))
                 }
             }
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    color = colorResource(R.color.Orange),
+                    modifier = Modifier
+                        .padding(top = 100.dp)
+                        .size(100.dp)
+                        .align(Alignment.CenterHorizontally),
+                    strokeWidth = 7.dp
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        EmployeeDonutChart(
+                            new = state.stats.new,
+                            inProgress = state.stats.inProgress,
+                            done = state.stats.done
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    EmployeeDonutChart(
-                        new = state.stats.new,
-                        inProgress = state.stats.inProgress,
-                        done = state.stats.done
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
+                    item {
+                        StatCard("Всего заявок", state.stats.total, Color.Gray)
+                    }
 
-                item {
-                    StatCard("Всего заявок", state.stats.total, Color.Gray)
-                }
+                    item {
+                        StatCard("Не приняты", state.stats.new, Color(0xFFEF5350))
+                    }
 
-                item {
-                    StatCard("Не приняты", state.stats.new, Color(0xFFEF5350))
-                }
+                    item {
+                        StatCard("В работе", state.stats.inProgress, Color(0xFFFFA726))
+                    }
 
-                item {
-                    StatCard("В работе", state.stats.inProgress, Color(0xFFFFA726))
-                }
+                    item {
+                        StatCard("Выполнены", state.stats.done, Color(0xFF66BB6A))
+                    }
 
-                item {
-                    StatCard("Выполнены", state.stats.done, Color(0xFF66BB6A))
-                }
+                    item {
+                        DatePickerButton(
+                            from = state.fromDate,
+                            to = state.toDate,
+                            onClick = { showPicker = true }
+                        )
+                    }
 
-                item {
-                    DatePickerButton(
-                        from = state.fromDate,
-                        to = state.toDate,
-                        onClick = { showPicker = true }
-                    )
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(80.dp))
+                    item {
+                        Spacer(modifier = Modifier.height(80.dp))
+                    }
                 }
             }
         }
