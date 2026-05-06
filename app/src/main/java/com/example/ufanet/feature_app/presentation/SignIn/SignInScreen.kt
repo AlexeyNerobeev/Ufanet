@@ -68,7 +68,7 @@ fun SignInScreen(navController: NavController, vm: SignInVM = hiltViewModel()) {
         }
     }
     if(state.exception.isNotEmpty()){
-        ErrorAlertDialog(state.exception) {
+        ErrorAlertDialog("Неправильные почта или пароль") {
             vm.onEvent(SignInEvent.ExceptionClear)
         }
     } else if(state.emailError.isNotEmpty()){

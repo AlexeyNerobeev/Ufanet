@@ -51,7 +51,7 @@ fun BottomNavigation(navController: NavController, activityNumber: Int) {
             modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
             IconButton(
                 onClick = {
